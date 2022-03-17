@@ -98,6 +98,18 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
+        legalAgent:
+          $ref: '#/components/schemas/Contact'
+        purchaseOrderContact:
+          $ref: '#/components/schemas/Contact'
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entity'
+        statusLog:
+          type: array
+          items:
+            $ref: '#/components/schemas/Log'
       required:
         - name
         - rut
@@ -119,6 +131,71 @@ components:
         street:
           type: string
         zipCode:
+          type: string
+    Payment:
+      title: Payment
+      type: object
+      properties:
+        currencyCod:
+          type: string
+          enum:
+            - PEN
+            - CLP
+            - USD
+            - ARS
+            - EUR
+        condition:
+          type: string
+          enum:
+            - 30_DAYS
+            - 15_DAYS
+        supplierId:
+          type: number
+    Contact:
+      title: Contact
+      type: object
+      properties:
+        id:
+          type: number
+        names:
+          type: string
+        lastnames:
+          type: string
+        rut:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        language:
+          type: string
+          enum:
+            - ESP
+        businessArea:
+          type: string
+        jobTitle:
+          type: string
+    Entity:
+      title: Entity
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    StatusLog:
+      title: StatusLog
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        timestamp:
+          type: string
+        newStatus:
+          type: string
+        oldStatus:
           type: string
   securitySchemes: {}
 tags:
