@@ -58,6 +58,30 @@ paths:
         description: Post the necessary fields for the API to create a new supplier.
       description: Create a new supplier.
     parameters: []
+  '/supplier/{id}/document':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-supplier-id-doc
+    post:
+      summary: ''
+      operationId: post-supplier-id-doc
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
 components:
   schemas:
     Supplier:
@@ -109,7 +133,17 @@ components:
         statusLog:
           type: array
           items:
-            $ref: '#/components/schemas/Log'
+            $ref: '#/components/schemas/StatusLog'
+        accountGroup:
+          type: string
+          enum:
+            - DIST
+            - ACREE
+        treasuryGroup:
+          type: string
+          enum:
+            - GASTO
+            - EXISTENCIA
       required:
         - name
         - rut
@@ -189,6 +223,7 @@ components:
       properties:
         id:
           type: string
+          example: UUID
         username:
           type: string
         timestamp:
@@ -196,6 +231,43 @@ components:
         newStatus:
           type: string
         oldStatus:
+          type: string
+    Document:
+      title: Document
+      type: object
+      properties:
+        id:
+          type: string
+          example: UUID
+        type:
+          type: string
+          enum:
+            - ROL
+        originalFilename:
+          type: string
+        format:
+          type: string
+          enum:
+            - PNG
+            - JPG
+            - PDF
+        status:
+          type: string
+        timestamp:
+          type: string
+        idSupplier:
+          type: number
+    EntitySupplier:
+      title: EntitySupplier
+      type: object
+      properties:
+        entityId:
+          type: number
+        supplierid:
+          type: number
+        invoiceIssuer:
+          type: number
+        status:
           type: string
   securitySchemes: {}
 tags:
