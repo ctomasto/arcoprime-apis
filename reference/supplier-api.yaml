@@ -254,8 +254,6 @@ components:
           type: string
         timestamp:
           type: string
-        idSupplier:
-          type: number
         file:
           type: string
           format: binary
