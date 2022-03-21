@@ -37,7 +37,7 @@ paths:
           description: RUT del proveedor
   /supplier:
     post:
-      summary: Create New
+      summary: Create Supplier
       tags:
         - supplier
       operationId: post-supplier
@@ -58,20 +58,10 @@ paths:
         description: Post the necessary fields for the API to create a new supplier.
       description: Create a new supplier.
     parameters: []
-  '/supplier/{id}/document':
-    parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses: {}
-      operationId: get-supplier-id-doc
+  /supplier/document:
+    parameters: []
     post:
-      summary: ''
+      summary: Upload document
       operationId: post-supplier-id-doc
       responses:
         '200':
@@ -80,8 +70,16 @@ paths:
         content:
           multipart/form-data:
             schema:
+              $ref: '#/components/schemas/Document'
+          application/json:
+            schema:
               type: object
               properties: {}
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+      description: Endpoint to send a file and its metadata
 components:
   schemas:
     Supplier:
@@ -243,6 +241,7 @@ components:
           type: string
           enum:
             - ROL
+            - EVIDENCIA
         originalFilename:
           type: string
         format:
@@ -257,6 +256,9 @@ components:
           type: string
         idSupplier:
           type: number
+        file:
+          type: string
+          format: binary
     EntitySupplier:
       title: EntitySupplier
       type: object
