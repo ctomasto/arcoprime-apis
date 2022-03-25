@@ -132,6 +132,77 @@ paths:
         description: Post the necessary fields for the API to upload a file
       description: Upload a file
     parameters: []
+  /address/country:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Country'
+      operationId: get-address-country
+  /address/city:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-address-city
+      parameters:
+        - schema:
+            type: string
+            example: CL
+          in: query
+          name: countryCode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/City'
+  /address/region:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-address-region
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: cityCode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Region'
+  /address/commune:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Commune'
+      operationId: get-address-communa
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: regionCode
+    parameters: []
 components:
   schemas:
     Document:
@@ -161,3 +232,47 @@ components:
         file:
           type: string
           format: binary
+    Country:
+      title: Country
+      type: object
+      properties:
+        code:
+          type: string
+          description: ISO standard
+          example: CL
+        name:
+          type: string
+          example: Chile
+        id:
+          type: number
+          example: 1
+    City:
+      title: City
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        id:
+          type: number
+    Region:
+      title: Region
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        id:
+          type: number
+    Commune:
+      title: Commune
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        id:
+          type: integer
