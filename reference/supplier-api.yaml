@@ -168,6 +168,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Entity'
+        payment:
+          $ref: '#/components/schemas/Payment'
         statusLog:
           type: array
           items:
@@ -184,8 +186,6 @@ components:
             - EXISTENCIA
         log:
           $ref: '#/components/schemas/Log'
-        payment:
-          $ref: '#/components/schemas/Payment'
       required:
         - name
         - rut
