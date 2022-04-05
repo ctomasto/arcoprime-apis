@@ -48,6 +48,24 @@ paths:
         description: Post the necessary fields for the API to upload a file
       description: Upload a file
     parameters: []
+  '/document/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+      operationId: get-document-id
   /address/country:
     get:
       summary: Your GET endpoint

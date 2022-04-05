@@ -74,6 +74,21 @@ paths:
             type: string
           in: header
           name: username
+    patch:
+      summary: Actualización parcial de Proveedores
+      operationId: patch-supplier-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Supplier'
   /supplier:
     post:
       summary: Create Supplier
@@ -186,9 +201,16 @@ components:
             - EXISTENCIA
         log:
           $ref: '#/components/schemas/Log'
+        documents:
+          type: array
+          items:
+            type: string
+            example: '{6567-7232-8387, 6567-7232-4387, 6567-7232-8334}'
       required:
         - name
+        - origin
         - rut
+        - legalAgent
     Address:
       title: Address
       type: object
