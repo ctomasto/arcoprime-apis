@@ -98,6 +98,10 @@ paths:
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
         '400':
           description: Bad Request
         '401':
@@ -147,24 +151,29 @@ components:
           description: Unique identifier for the given user.
         name:
           type: string
-        fictionName:
+          minLength: 1
+          maxLength: 100
+        fantasyName:
           type: string
+          minLength: 0
+          maxLength: 100
         personType:
           type: string
           enum:
-            - Natural
-            - Jurídica
+            - NATURAL
+            - JURIDICO
         origin:
           type: string
           enum:
-            - Nacional
-            - Internacional
+            - NACIONAL
+            - INTERNACIONAL
         sapCode:
           type: string
+          minLength: 0
+          maxLength: 30
         status:
           type: string
           enum:
-            - NEW
             - APPROVED
             - REJECTED
             - PENDING
@@ -179,7 +188,7 @@ components:
           $ref: '#/components/schemas/Contact'
         purchaseOrderContact:
           $ref: '#/components/schemas/Contact'
-        entities:
+        societies:
           type: array
           items:
             $ref: '#/components/schemas/Entity'
@@ -218,14 +227,14 @@ components:
         id:
           type: number
         country:
-          type: string
-          example: Segun estandar ISO
+          type: number
+          example: 1
         region:
-          type: string
+          type: number
         city:
-          type: string
+          type: number
         commune:
-          type: string
+          type: number
         street:
           type: string
         zipCode:
@@ -234,6 +243,8 @@ components:
       title: Payment
       type: object
       properties:
+        id:
+          type: number
         currencyCod:
           type: string
           enum:
@@ -247,12 +258,12 @@ components:
           enum:
             - 30_DAYS
             - 15_DAYS
-        supplierId:
-          type: number
     Contact:
       title: Contact
       type: object
       properties:
+        id:
+          type: number
         names:
           type: string
         lastnames:
@@ -266,19 +277,34 @@ components:
         language:
           type: string
           enum:
-            - ESP
+            - INGLES
+            - ESPANIOL
+          default: ESPANIOL
         businessArea:
           type: string
+          enum:
+            - VENTAS
         jobTitle:
           type: string
+          enum:
+            - JEFE_VENTAS
+      required:
+        - names
+        - lastnames
+        - rut
     Entity:
       title: Entity
       type: object
       properties:
         id:
           type: string
+          example: ARPM
         name:
           type: string
+          example: Arcoprime
+      required:
+        - id
+        - name
     StatusLog:
       title: StatusLog
       type: object
@@ -362,6 +388,48 @@ components:
           type: string
         internalMessage:
           type: string
+    File:
+      title: File
+      type: object
+      properties:
+        id:
+          type: number
+        code:
+          type: string
+          example: cacf2e09-9647-4f84-9d5e-5ddcb37d4cc0
+        format:
+          type: string
+          enum:
+            - JPG
+            - PNG
+            - PDF
+        originalFilename:
+          type: string
+        fileSize:
+          type: number
+        domain:
+          type: string
+          enum:
+            - SUPPLIER
+            - PRODUCT
+        content:
+          type: string
+          enum:
+            - ROL
+            - PEP
+        status:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 1
+          description: '1: Activo, 0: Inactivo'
+      required:
+        - code
+        - format
+        - originalFilename
+        - fileSize
+        - domain
+        - content
   securitySchemes: {}
 tags:
   - name: supplier
