@@ -253,8 +253,6 @@ components:
       title: Contact
       type: object
       properties:
-        id:
-          type: number
         names:
           type: string
         lastnames:
