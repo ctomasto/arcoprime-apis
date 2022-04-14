@@ -352,6 +352,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorFileInvalidUuid'
+              examples:
+                example-1:
+                  value:
+                    error: Invalid UUID of file
         '404':
           description: File not found
           content:

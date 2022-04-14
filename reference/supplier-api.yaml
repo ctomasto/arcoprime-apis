@@ -131,14 +131,68 @@ paths:
         - schema:
             type: string
           in: header
-          name: username
-          description: usuario que realiza la accion
+          name: userId
+          description: id of the user who does the action
         - schema:
             type: string
           in: header
           name: apikey
-          description: key de autorización
+          description: authorization key
     parameters: []
+    get:
+      summary: ''
+      operationId: get-supplier
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suppliers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Supplier'
+                  pageMeta:
+                    $ref: '#/components/schemas/PageMeta'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+            default: DESC
+          in: query
+          name: order
+          description: order of the results based on create-dae
+        - schema:
+            type: number
+            example: 1
+          in: query
+          name: page
+          description: the page number
+          required: true
+        - schema:
+            type: number
+            example: 10
+            default: 10
+          in: query
+          name: take
+          description: number of rows per page
+        - schema:
+            type: array
+          in: query
+          name: status
+          style: form
+          description: provider status
+      description: Get suppliers by searching criteria and by pages
 components:
   schemas:
     Supplier:
@@ -386,7 +440,7 @@ components:
       properties:
         userMessage:
           type: string
-        internalMessage:
+        internalException:
           type: string
     File:
       title: File
@@ -430,6 +484,29 @@ components:
         - fileSize
         - domain
         - content
+    PageMeta:
+      title: PageMeta
+      type: object
+      description: pagination data
+      properties:
+        page:
+          type: number
+          description: current page
+        take:
+          type: number
+          description: number of rows per page
+        totalRecords:
+          type: number
+          description: total number of records
+        pageCount:
+          type: number
+          description: total number of pages
+        hasPreviusPage:
+          type: boolean
+          description: this flag means there is a previous page to retrieve
+        hasNextPage:
+          type: boolean
+          description: this flag means there is a next page to retrieve
   securitySchemes: {}
 tags:
   - name: supplier
