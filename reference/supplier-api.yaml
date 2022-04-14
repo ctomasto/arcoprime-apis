@@ -84,6 +84,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Supplier'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       requestBody:
         content:
           application/json:
@@ -109,8 +125,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
+                $ref: '#/components/schemas/Error'
         '500':
           description: ''
           content:
@@ -267,8 +282,7 @@ components:
         documents:
           type: array
           items:
-            type: string
-            example: '{6567-7232-8387, 6567-7232-4387, 6567-7232-8334}'
+            $ref: '#/components/schemas/FileMeta'
       required:
         - name
         - origin
@@ -363,10 +377,6 @@ components:
       title: StatusLog
       type: object
       properties:
-        id:
-          type: string
-          example: fb16291c-aa06-11ec-b909-0242ac120002
-          description: identifier in UUID format
         user:
           type: string
           example: frojas@arcoprime.cl
@@ -397,24 +407,6 @@ components:
             - READY
             - ERROR
           description: This is the old status that has been changed for the supplier.
-    EntitySupplier:
-      title: EntitySupplier
-      type: object
-      description: Relation that describes the configuration of the suppliers in different entities
-      properties:
-        entityId:
-          type: number
-          description: Id of the entity
-          example: 0
-        supplierid:
-          type: number
-        invoiceIssuer:
-          type: number
-          description: This is the reference to a supplier id existing in PIM or SAP
-        status:
-          type: integer
-          example: 0
-          default: 1
     Log:
       title: Log
       type: object
@@ -434,20 +426,10 @@ components:
           type: string
           example: frojas@arcoprime.cl
       description: Model to support logging information
-    Error:
-      title: Error
+    FileMeta:
+      title: FileMeta
       type: object
       properties:
-        userMessage:
-          type: string
-        internalException:
-          type: string
-    File:
-      title: File
-      type: object
-      properties:
-        id:
-          type: number
         code:
           type: string
           example: cacf2e09-9647-4f84-9d5e-5ddcb37d4cc0
@@ -484,6 +466,14 @@ components:
         - fileSize
         - domain
         - content
+    Error:
+      title: Error
+      type: object
+      properties:
+        userMessage:
+          type: string
+        internalException:
+          type: string
     PageMeta:
       title: PageMeta
       type: object

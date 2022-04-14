@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   version: 1.0.0
   title: ArcoPrime PIM project API/endpoints
+  description: Api for common stuff
   termsOfService: 'http://swagger.io/terms/'
   contact:
     name: API Support
@@ -41,11 +42,12 @@ x-tagGroups:
     tags:
       - users
 paths:
-  /helpers/country/:
+  /helpers/country:
     get:
       tags:
         - geography
       summary: Get countries
+      description: Returns a list of country
       operationId: get-helpers-country
       responses:
         '200':
@@ -80,16 +82,8 @@ paths:
                 $ref: '#/components/schemas/CountryDetail'
         '400':
           description: Invalid ID supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorCountryInvalidId'
         '404':
           description: Country not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorCountryNotFound'
   /helpers/region:
     get:
       tags:
@@ -108,10 +102,6 @@ paths:
                   $ref: '#/components/schemas/Region'
         '400':
           description: Invalid country code
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorRegionInvalidCountryCode'
       parameters:
         - schema:
             type: string
@@ -142,16 +132,8 @@ paths:
                 $ref: '#/components/schemas/Region'
         '400':
           description: Invalid ID supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorRegionInvalidId'
         '404':
           description: Region not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorRegionNotFound'
   /helpers/commune:
     get:
       tags:
@@ -170,10 +152,6 @@ paths:
                   $ref: '#/components/schemas/Commune'
         '400':
           description: Invalid region code
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorCommuneInvalidRegionCode'
       parameters:
         - schema:
             type: number
@@ -204,16 +182,8 @@ paths:
                 $ref: '#/components/schemas/Commune'
         '400':
           description: Invalid ID supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorCommuneInvalidId'
         '404':
           description: Commune not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorCommuneNotFound'
   /helpers/city:
     get:
       tags:
@@ -232,10 +202,6 @@ paths:
                   $ref: '#/components/schemas/City'
         '400':
           description: Invalid commune code
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorCityInvalidCommuneCode'
       parameters:
         - schema:
             type: number
@@ -266,16 +232,8 @@ paths:
                 $ref: '#/components/schemas/City'
         '400':
           description: Invalid ID supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorCityInvalidId'
         '404':
           description: City not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorCityNotFound'
   '/helpers/file/{uuid}':
     get:
       tags:
@@ -301,34 +259,20 @@ paths:
                 format: binary
         '400':
           description: Invalid UUID supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorFileInvalidUuid'
         '401':
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorUnauthorized'
         '404':
           description: File not found
+        '500':
+          description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorFileNotFound'
+                $ref: ./supplier-api.yaml#/components/schemas/Error
         '503':
           description: Service unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorUnavailable'
         '504':
           description: Gateway timeout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorTimeout'
     delete:
       tags:
         - files
@@ -348,22 +292,14 @@ paths:
           description: Successful operation
         '400':
           description: Invalid UUID supplied
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorFileInvalidUuid'
-              examples:
-                example-1:
-                  value:
-                    error: Invalid UUID of file
         '404':
           description: File not found
+        '500':
+          description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorFileNotFound'
-        '500':
-          description: Internal Server Error
+                $ref: ./supplier-api.yaml#/components/schemas/Error
   /helpers/file:
     post:
       tags:
@@ -400,11 +336,7 @@ paths:
                 required:
                   - code
         '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorFileBadRequest'
+          description: Bad Request
 components:
   schemas:
     Country:
@@ -451,22 +383,6 @@ components:
           type: string
           description: International phone code of the country
           example: '+56'
-    ErrorCountryInvalidId:
-      title: Invalid id
-      type: object
-      properties:
-        error:
-          type: string
-          description: Invalid id of country
-          example: Invalid id of country
-    ErrorCountryNotFound:
-      title: Country not found
-      type: object
-      properties:
-        error:
-          type: string
-          description: Country not found
-          example: Country not found
     Region:
       title: Region
       type: object
@@ -483,30 +399,6 @@ components:
           type: number
           description: Id of the parent country in database
           example: 44
-    ErrorRegionInvalidCountryCode:
-      title: Invalid country code
-      type: object
-      properties:
-        error:
-          type: string
-          description: Invalid code of the country
-          example: The countryCode must have 3 characters
-    ErrorRegionInvalidId:
-      title: Invalid id
-      type: object
-      properties:
-        error:
-          type: string
-          description: Invalid id of region
-          example: Invalid id of region
-    ErrorRegionNotFound:
-      title: Region not found
-      type: object
-      properties:
-        error:
-          type: string
-          description: Description of the error
-          example: Region not found
     Commune:
       title: Commune
       type: object
@@ -527,30 +419,6 @@ components:
           type: number
           description: Id of the parent country in database
           example: 44
-    ErrorCommuneInvalidRegionCode:
-      title: Invalid region code
-      type: object
-      properties:
-        error:
-          type: string
-          description: Invalid code of the region
-          example: You must provide a regionCode in query params
-    ErrorCommuneInvalidId:
-      title: Invalid id
-      type: object
-      properties:
-        error:
-          type: string
-          description: Invalid id of commune
-          example: Invalid id of commune
-    ErrorCommuneNotFound:
-      title: Commune not found
-      type: object
-      properties:
-        error:
-          type: string
-          description: Commune not found
-          example: Commune not found
     City:
       title: City
       type: object
@@ -575,75 +443,3 @@ components:
           type: number
           description: Id of the parent country in database
           example: 44
-    ErrorCityInvalidCommuneCode:
-      title: Invalid commune code
-      type: object
-      properties:
-        error:
-          type: string
-          description: Invalid code of the commune
-          example: You must provide a communeCode in query params
-    ErrorCityInvalidId:
-      title: Invalid id
-      type: object
-      properties:
-        error:
-          type: string
-          description: Invalid id of city
-          example: Invalid id of city
-    ErrorCityNotFound:
-      title: City not found
-      type: object
-      properties:
-        error:
-          type: string
-          description: City not found
-          example: City not found
-    ErrorFileBadRequest:
-      title: Bad request
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error message from the API
-          example: File can't be empty
-    ErrorFileInvalidUuid:
-      title: Invalid UUID
-      type: object
-      properties:
-        error:
-          type: string
-          description: Invalid UUID of file
-          example: Invalid UUID of file
-    ErrorFileNotFound:
-      title: File not found
-      type: object
-      properties:
-        error:
-          type: string
-          description: File not found
-          example: File not found
-    ErrorUnauthorized:
-      title: Unauthorized
-      type: object
-      properties:
-        error:
-          type: string
-          description: Token is invalid or expired
-          example: Token is invalid or expired
-    ErrorUnavailable:
-      title: Service unavailable
-      type: object
-      properties:
-        error:
-          type: string
-          description: Service unavailable
-          example: Service unavailable
-    ErrorTimeout:
-      title: Gateway timeout
-      type: object
-      properties:
-        error:
-          type: string
-          description: Gateway timeout
-          example: Gateway timeout
