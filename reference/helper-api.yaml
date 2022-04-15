@@ -268,7 +268,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./supplier-api.yaml#/components/schemas/Error
+                $ref: '#/components/schemas/Error'
         '503':
           description: Service unavailable
         '504':
@@ -299,7 +299,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./supplier-api.yaml#/components/schemas/Error
+                $ref: '#/components/schemas/Error'
   /helpers/file:
     post:
       tags:
@@ -443,3 +443,11 @@ components:
           type: number
           description: Id of the parent country in database
           example: 44
+    Error:
+      title: Error
+      type: object
+      properties:
+        userMessage:
+          type: string
+        internalException:
+          type: string
