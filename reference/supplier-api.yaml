@@ -208,6 +208,105 @@ paths:
           style: form
           description: provider status
       description: Get suppliers by searching criteria and by pages
+  '/supplier/{id}/evaluation':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evaluation'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-supplier-id-evaluation
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: status
+      description: 'This endpoint allow us to get the list of evaluations assigned to a supplier. You can filter by status (there will be only one with status "STARTED", which is the active one)'
+  '/supplier/{id}/evaluation/{idEval}/result':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: idEval
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-supplier-id-evaluation-idEval-result
+    post:
+      summary: POST a result
+      operationId: post-supplier-id-evaluation-idEval-result
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: userId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Result'
+      description: This endpoint allow us to register the result of an evaluation
 components:
   schemas:
     Supplier:
@@ -497,6 +596,79 @@ components:
         hasNextPage:
           type: boolean
           description: this flag means there is a next page to retrieve
+    Evaluation:
+      title: Evaluation
+      type: object
+      properties:
+        id:
+          type: number
+        status:
+          type: string
+          enum:
+            - STARTED
+            - CLOSED
+          default: STARTED
+        evaluationDate:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/User'
+        notificationSent:
+          type: boolean
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Result'
+        supplierSummary:
+          $ref: '#/components/schemas/SupplierSummary'
+    User:
+      title: User
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        lastname:
+          type: string
+    Result:
+      title: Result
+      type: object
+      properties:
+        id:
+          type: number
+        user:
+          $ref: '#/components/schemas/User'
+        comment:
+          type: string
+        qualification:
+          type: string
+          enum:
+            - APPROVED
+            - REJECTED
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileMeta'
+      required:
+        - qualification
+        - evidence
+    SupplierSummary:
+      title: SupplierSummary
+      type: object
+      properties:
+        name:
+          type: string
+        rut:
+          type: string
+        origin:
+          type: string
+        legalAgentName:
+          type: string
+        legalAgentLastnames:
+          type: string
+        legalAgentRut:
+          type: string
   securitySchemes: {}
 tags:
   - name: supplier
