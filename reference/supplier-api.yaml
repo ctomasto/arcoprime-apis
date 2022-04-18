@@ -569,10 +569,13 @@ components:
       title: Error
       type: object
       properties:
-        userMessage:
+        code:
           type: string
-        internalException:
+          enum:
+            - BUSINNESS_EXCEPTION
+        message:
           type: string
+          example: Usuario no existe
     PageMeta:
       title: PageMeta
       type: object
