@@ -165,11 +165,11 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
+                  suppliers:
                     type: array
                     items:
                       $ref: '#/components/schemas/Supplier'
-                  meta:
+                  pageMeta:
                     $ref: '#/components/schemas/PageMeta'
         '500':
           description: Internal Server Error
@@ -208,6 +208,105 @@ paths:
           style: form
           description: provider status
       description: Get suppliers by searching criteria and by pages
+  '/supplier/{id}/evaluation':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evaluation'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-supplier-id-evaluation
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: status
+      description: 'This endpoint allow us to get the list of evaluations assigned to a supplier. You can filter by status (there will be only one with status "STARTED", which is the active one)'
+  '/supplier/{id}/evaluation/{idEval}/result':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: idEval
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-supplier-id-evaluation-idEval-result
+    post:
+      summary: POST a result
+      operationId: post-supplier-id-evaluation-idEval-result
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: userId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Result'
+      description: This endpoint allow us to register the result of an evaluation
 components:
   schemas:
     Supplier:
@@ -251,7 +350,7 @@ components:
             - ERROR
         rut:
           type: string
-        addressDetail:
+        address:
           $ref: '#/components/schemas/Address'
         legalAgent:
           $ref: '#/components/schemas/Contact'
@@ -275,7 +374,7 @@ components:
             - EXISTENCIA
         log:
           $ref: '#/components/schemas/Log'
-        documentsMetadata:
+        documents:
           type: array
           items:
             $ref: '#/components/schemas/FileMeta'
@@ -328,9 +427,9 @@ components:
       properties:
         id:
           type: number
-        name:
+        names:
           type: string
-        lastname:
+        lastnames:
           type: string
         rut:
           type: string
@@ -353,11 +452,11 @@ components:
           enum:
             - JEFE_VENTAS
       required:
-        - name
-        - lastname
+        - names
+        - lastnames
         - rut
-    Entity:
-      title: Entity
+    Society:
+      title: Society
       type: object
       properties:
         id:
@@ -406,27 +505,30 @@ components:
     Log:
       title: Log
       type: object
-      description: Model to support logging information
       properties:
-        createdAt:
+        createDate:
           type: string
           format: date-time
           example: '2018-05-15T14:51:12.402+00:00'
-        updatedAt:
+        updateDate:
           type: string
           format: date-time
           example: '2018-05-15T14:51:12.402+00:00'
-        createdBy:
-          $ref: '#/components/schemas/User'
-        updatedBy:
-          $ref: '#/components/schemas/User'
-    FileMeta:
-      title: FileMeta
+        createUser:
+          type: string
+          example: frojas@arcoprime.cl
+        updateUser:
+          type: string
+          example: frojas@arcoprime.cl
+      description: Model to support logging information
+    FileMetadata:
+      title: FileMetadata
       type: object
       properties:
         code:
           type: string
           example: cacf2e09-9647-4f84-9d5e-5ddcb37d4cc0
+          format: uuid
         format:
           type: string
           enum:
@@ -464,10 +566,13 @@ components:
       title: Error
       type: object
       properties:
-        userMessage:
+        code:
           type: string
-        internalException:
+          enum:
+            - BUSINNESS_EXCEPTION
+        message:
           type: string
+          example: Usuario no existe
     PageMeta:
       title: PageMeta
       type: object
@@ -491,6 +596,31 @@ components:
         hasNextPage:
           type: boolean
           description: this flag means there is a next page to retrieve
+    Evaluation:
+      title: Evaluation
+      type: object
+      properties:
+        id:
+          type: number
+        status:
+          type: string
+          enum:
+            - STARTED
+            - CLOSED
+          default: STARTED
+        evaluationDate:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/User'
+        notificationSent:
+          type: boolean
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Result'
+        supplierSummary:
+          $ref: '#/components/schemas/SupplierSummary'
     User:
       title: User
       type: object
@@ -501,7 +631,43 @@ components:
           type: string
         lastname:
           type: string
-        email:
+    Result:
+      title: Result
+      type: object
+      properties:
+        id:
+          type: number
+        user:
+          $ref: '#/components/schemas/User'
+        comment:
+          type: string
+        qualification:
+          type: string
+          enum:
+            - APPROVED
+            - REJECTED
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileMeta'
+      required:
+        - qualification
+        - evidence
+    SupplierSummary:
+      title: SupplierSummary
+      type: object
+      properties:
+        name:
+          type: string
+        rut:
+          type: string
+        origin:
+          type: string
+        legalAgentName:
+          type: string
+        legalAgentLastnames:
+          type: string
+        legalAgentRut:
           type: string
   securitySchemes: {}
 tags:
