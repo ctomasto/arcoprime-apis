@@ -105,6 +105,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Supplier'
+      parameters:
+        - schema:
+            type: number
+          in: header
+          name: userId
+          description: Id of the user who is doing the action
+          required: true
   /supplier:
     post:
       summary: Create Supplier
@@ -206,8 +213,33 @@ paths:
           in: query
           name: status
           style: form
-          description: provider status
+          description: supplier status
+        - schema:
+            type: string
+          in: query
+          name: rut
+          description: supplier rut
       description: Get suppliers by searching criteria and by pages
+  '/supplier/{id}/confirmation':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-supplier-id-confirmation
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - schema:
+            type: number
+          in: header
+          name: userId
+          description: id of the user who is doing the action
+          required: true
 components:
   schemas:
     Supplier:
@@ -275,10 +307,14 @@ components:
             - EXISTENCIA
         log:
           $ref: '#/components/schemas/Log'
-        documentsMetadata:
-          type: array
-          items:
-            $ref: '#/components/schemas/FileMeta'
+        rol:
+          type: string
+          format: uuid
+        creationStatus:
+          type: string
+          enum:
+            - EDITING
+            - COMPLETE
       required:
         - name
         - origin
@@ -369,40 +405,6 @@ components:
       required:
         - id
         - name
-    StatusLog:
-      title: StatusLog
-      type: object
-      properties:
-        user:
-          type: string
-          example: frojas@arcoprime.cl
-          description: Identifier of the user who did the change of status.
-        timestamp:
-          type: string
-          format: date-time
-          example: '2018-05-15T14:51:12.402+00:00'
-        newStatus:
-          type: string
-          enum:
-            - NEW
-            - PENDING
-            - APPROVED
-            - REJECED
-            - REGISTERING
-            - READY
-            - ERROR
-          description: This is the current status configured for the supplier
-        oldStatus:
-          type: string
-          enum:
-            - NEW
-            - PENDING
-            - APPROVED
-            - REJECED
-            - REGISTERING
-            - READY
-            - ERROR
-          description: This is the old status that has been changed for the supplier.
     Log:
       title: Log
       type: object
@@ -420,53 +422,13 @@ components:
           $ref: '#/components/schemas/User'
         updatedBy:
           $ref: '#/components/schemas/User'
-    FileMeta:
-      title: FileMeta
-      type: object
-      properties:
-        code:
-          type: string
-          example: cacf2e09-9647-4f84-9d5e-5ddcb37d4cc0
-        format:
-          type: string
-          enum:
-            - JPG
-            - PNG
-            - PDF
-        originalFilename:
-          type: string
-        fileSize:
-          type: number
-        domain:
-          type: string
-          enum:
-            - SUPPLIER
-            - PRODUCT
-        content:
-          type: string
-          enum:
-            - ROL
-            - PEP
-        status:
-          type: number
-          minimum: 0
-          maximum: 1
-          default: 1
-          description: '1: Activo, 0: Inactivo'
-      required:
-        - code
-        - format
-        - originalFilename
-        - fileSize
-        - domain
-        - content
     Error:
       title: Error
       type: object
       properties:
-        userMessage:
+        code:
           type: string
-        internalException:
+        message:
           type: string
     PageMeta:
       title: PageMeta
