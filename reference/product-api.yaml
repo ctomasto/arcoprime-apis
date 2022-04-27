@@ -1,0 +1,196 @@
+openapi: 3.1.0
+info:
+  title: product-api
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+    patch:
+      summary: Update User Information
+      operationId: patch-users-userId
+      responses:
+        '200':
+          description: User Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                Updated User Rebecca Baker:
+                  value:
+                    id: 13
+                    firstName: Rebecca
+                    lastName: Baker
+                    email: rebecca@gmail.com
+                    dateOfBirth: '1985-10-02'
+                    emailVerified: false
+                    createDate: '2019-08-24'
+        '404':
+          description: User Not Found
+        '409':
+          description: Email Already Taken
+      description: Update the information of an existing user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                  description: 'If a new email is given, the user''s email verified property will be set to false.'
+                dateOfBirth:
+                  type: string
+            examples:
+              Update First Name:
+                value:
+                  firstName: Rebecca
+              Update Email:
+                value:
+                  email: rebecca@gmail.com
+              Update Last Name & Date of Birth:
+                value:
+                  lastName: Baker
+                  dateOfBirth: '1985-10-02'
+        description: Patch user properties to update.
+  /user:
+    post:
+      summary: Create New User
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                New User Bob Fellow:
+                  value:
+                    id: 12
+                    firstName: Bob
+                    lastName: Fellow
+                    email: bob.fellow@gmail.com
+                    dateOfBirth: '1996-08-24'
+                    emailVerified: false
+                    createDate: '2020-11-18'
+        '400':
+          description: Missing Required Information
+        '409':
+          description: Email Already Taken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+              required:
+                - firstName
+                - lastName
+                - email
+                - dateOfBirth
+            examples:
+              Create User Bob Fellow:
+                value:
+                  firstName: Bob
+                  lastName: Fellow
+                  email: bob.fellow@gmail.com
+                  dateOfBirth: '1996-08-24'
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new user.
+components:
+  schemas:
+    Product:
+      title: Product
+      type: object
+      description: ''
+      examples:
+        - id: 142
+          firstName: Alice
+          lastName: Smith
+          email: alice.smith@gmail.com
+          dateOfBirth: '1997-10-31'
+          emailVerified: true
+          signUpDate: '2019-08-24'
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        sku:
+          type: string
+        genericName:
+          type: string
+        brand:
+          type: string
+          format: email
+        clasification:
+          $ref: '#/components/schemas/Clasification'
+        type:
+          type: string
+          description: Set to true if the user's email has been verified.
+          enum:
+            - MERCADERIA
+        creationStatus:
+          type: string
+          format: date
+          description: The date that the user was created.
+          enum:
+            - EDITING
+            - REVIEW
+            - TO_BE_APPROVED
+            - TO_BE_PUBLISHED
+            - PUBLISHED
+            - REJECTED
+            - ERROR
+      required:
+        - id
+        - sku
+        - genericName
+        - brand
+        - type
+    Clasification:
+      title: Clasification
+      type: object
+      properties:
+        category:
+          type: string
+        hierarchy:
+          type: string
+        family:
+          type: string
+    Log:
+      title: Log
+      type: object
+      description: Model to support logging information
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          example: '2018-05-15T14:51:12.402+00:00'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2018-05-15T14:51:12.402+00:00'
+        createdBy:
+          $ref: '#/components/schemas/User'
+        updatedBy:
+          $ref: '#/components/schemas/User'
+    User:
+      title: User
+      type: object
+      properties:
+        id:
+          type: string
