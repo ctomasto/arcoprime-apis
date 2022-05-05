@@ -5,112 +5,56 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-    patch:
-      summary: Update User Information
-      operationId: patch-users-userId
+  /product:
+    get:
+      summary: Your GET endpoint
+      tags: []
       responses:
         '200':
-          description: User Updated
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                Updated User Rebecca Baker:
-                  value:
-                    id: 13
-                    firstName: Rebecca
-                    lastName: Baker
-                    email: rebecca@gmail.com
-                    dateOfBirth: '1985-10-02'
-                    emailVerified: false
-                    createDate: '2019-08-24'
-        '404':
-          description: User Not Found
-        '409':
-          description: Email Already Taken
-      description: Update the information of an existing user.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                  description: 'If a new email is given, the user''s email verified property will be set to false.'
-                dateOfBirth:
-                  type: string
-            examples:
-              Update First Name:
-                value:
-                  firstName: Rebecca
-              Update Email:
-                value:
-                  email: rebecca@gmail.com
-              Update Last Name & Date of Birth:
-                value:
-                  lastName: Baker
-                  dateOfBirth: '1985-10-02'
-        description: Patch user properties to update.
-  /user:
-    post:
-      summary: Create New User
-      operationId: post-user
-      responses:
-        '200':
-          description: User Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                New User Bob Fellow:
-                  value:
-                    id: 12
-                    firstName: Bob
-                    lastName: Fellow
-                    email: bob.fellow@gmail.com
-                    dateOfBirth: '1996-08-24'
-                    emailVerified: false
-                    createDate: '2020-11-18'
-        '400':
-          description: Missing Required Information
-        '409':
-          description: Email Already Taken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                dateOfBirth:
-                  type: string
-                  format: date
-              required:
-                - firstName
-                - lastName
-                - email
-                - dateOfBirth
-            examples:
-              Create User Bob Fellow:
-                value:
-                  firstName: Bob
-                  lastName: Fellow
-                  email: bob.fellow@gmail.com
-                  dateOfBirth: '1996-08-24'
-        description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  pageMeta:
+                    $ref: '#/components/schemas/PageMeta'
+      operationId: get-product
+      parameters:
+        - schema:
+            type: number
+          in: query
+          name: page
+          description: page number
+          required: true
+        - schema:
+            type: number
+            default: 10
+          in: query
+          name: take
+          description: number of files per page
+  /classification:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-classification
+      parameters:
+        - schema:
+            type: number
+            example: 2
+          in: query
+          name: level
+          required: true
+        - schema:
+            type: string
+            example: A0101
+          in: query
+          name: parentLevelId
 components:
   schemas:
     Product:
@@ -133,7 +77,9 @@ components:
           type: string
         genericName:
           type: string
-        brand:
+          minLength: 1
+          maxLength: 15
+        brandName:
           type: string
           format: email
         clasification:
@@ -155,12 +101,11 @@ components:
             - PUBLISHED
             - REJECTED
             - ERROR
-      required:
-        - id
-        - sku
-        - genericName
-        - brand
-        - type
+        log:
+          $ref: '#/components/schemas/Log'
+        photoUrl:
+          type: string
+          format: uuid
     Clasification:
       title: Clasification
       type: object
@@ -188,9 +133,46 @@ components:
           $ref: '#/components/schemas/User'
         updatedBy:
           $ref: '#/components/schemas/User'
+    Error:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    PageMeta:
+      title: PageMeta
+      type: object
+      description: pagination data
+      properties:
+        page:
+          type: number
+          description: current page
+        take:
+          type: number
+          description: number of rows per page
+        totalRecords:
+          type: number
+          description: total number of records
+        pageCount:
+          type: number
+          description: total number of pages
+        hasPreviusPage:
+          type: boolean
+          description: this flag means there is a previous page to retrieve
+        hasNextPage:
+          type: boolean
+          description: this flag means there is a next page to retrieve
     User:
       title: User
       type: object
       properties:
         id:
+          type: number
+        name:
+          type: string
+        lastname:
+          type: string
+        email:
           type: string
