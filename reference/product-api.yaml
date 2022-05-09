@@ -23,6 +23,8 @@ paths:
                       $ref: '#/components/schemas/Product'
                   pageMeta:
                     $ref: '#/components/schemas/PageMeta'
+        '404':
+          description: Not Found
       operationId: get-product
       parameters:
         - schema:
@@ -41,12 +43,22 @@ paths:
     get:
       summary: Your GET endpoint
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassificationLevel'
       operationId: get-classification
       parameters:
         - schema:
             type: number
             example: 2
+            minimum: 1
+            maximum: 4
           in: query
           name: level
           required: true
@@ -82,7 +94,7 @@ components:
         brandName:
           type: string
           format: email
-        clasification:
+        classification:
           $ref: '#/components/schemas/Clasification'
         type:
           type: string
@@ -137,7 +149,7 @@ components:
       title: Error
       type: object
       properties:
-        code:
+        errorCode:
           type: string
         message:
           type: string
@@ -175,4 +187,14 @@ components:
         lastname:
           type: string
         email:
+          type: string
+    ClassificationLevel:
+      title: ClassificationLevel
+      x-stoplight:
+        id: 0lev1fag7pnkj
+      type: object
+      properties:
+        id:
+          type: string
+        description:
           type: string
