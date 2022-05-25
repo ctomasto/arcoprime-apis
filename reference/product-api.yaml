@@ -1,31 +1,50 @@
 openapi: 3.1.0
 info:
-  title: product-api
   version: '1.0'
+  title: ArcoPrime PIM project API/endpoints for products microservice
+  description: API for products
+  contact:
+    name: API Support
+    email: contacto@arcoprime.cl
+    url: 'https://arcoprime.cl/'
+  x-logo:
+    url: 'https://www.prontocopec.cl/pronto/site/artic/20170516/imag/foto_0000000320170516112513.png'
+    altText: PIM Pronto Copec
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
   - url: 'http://localhost:3000'
+    description: Localhost
+  - url: 'https://10nor47a33.execute-api.us-east-1.amazonaws.com/dev'
+    description: Development sandbox
+tags:
+  - name: products
+    description: Operations about products
 paths:
   /product:
     get:
-      summary: Your GET endpoint
-      tags: []
+      summary: Search products
+      description: Search product with params
+      tags:
+        - products
+      operationId: get-product
       responses:
         '200':
-          description: OK
+          description: Product searched successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  result:
+                  data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Product'
-                  pageMeta:
+                  meta:
                     $ref: '#/components/schemas/PageMeta'
         '404':
           description: Not Found
-      operationId: get-product
       parameters:
         - schema:
             type: number
@@ -39,6 +58,54 @@ paths:
           in: query
           name: take
           description: number of files per page
+        - schema:
+            type: string
+            minLength: 3
+          in: query
+          name: value
+          description: Value of name, brand or product SKU
+          required: false
+        - schema:
+            type: string
+            minLength: 3
+          in: query
+          name: category
+          description: ID of category to search
+          required: false
+        - schema:
+            type: string
+            minLength: 5
+          in: query
+          name: hierarchy
+          description: ID of hierarchy to search
+          required: false
+        - schema:
+            type: string
+            minLength: 5
+          in: query
+          name: family
+          description: ID of family to search
+          required: false
+        - schema:
+            type: array
+          in: query
+          name: status
+          description: Status to search
+          required: false
+        - schema:
+            type: string
+            minLength: 3
+            maxLength: 4
+          in: query
+          name: order
+          description: Order products ASC or DESC
+          required: false
+        - schema:
+            type: string
+          in: query
+          name: orderProperty
+          description: Field name to order products
+          required: false
   /classification:
     get:
       summary: Your GET endpoint
@@ -67,6 +134,37 @@ paths:
             example: A0101
           in: query
           name: parentLevelId
+  /product/load:
+    post:
+      tags:
+        - products
+      summary: Load products
+      description: Load products with a MS Excel file with info of products to be loaded massively
+      operationId: post-load-products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileProductsLoad'
+      responses:
+        '201':
+          description: File processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileProductsResponse"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorFileProductsBadRequest'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Product:
@@ -74,17 +172,29 @@ components:
       type: object
       description: ''
       examples:
-        - id: 142
-          firstName: Alice
-          lastName: Smith
-          email: alice.smith@gmail.com
-          dateOfBirth: '1997-10-31'
-          emailVerified: true
-          signUpDate: '2019-08-24'
+        - id: 50
+          sku: "9849839"
+          genericName: Pisco quebranta
+          type: MERCADERIA
+          creationStatus: TO_BE_APPROVED
+          classification:
+            family: Tragos preparados
+            hierarchy: Bebidas alcoholicas
+            category: Liquidos
+          log:
+            createdAt: "2022-05-05T18:52:27.376Z"
+            updatedAt: "2022-05-05T18:52:27.376Z"
+            createdBy:
+              id: 1
+              name: Sergio
+              lastname: Bardales
+              email: sergiobardales@arcoprime.cl
+            updatedBy: null
+          photoUrl: "https://arpm-mrch-pim-backend-uploads-dev.s3.amazonaws.com/product/photo/37d73d7c-878d-4861-88fc-e8c5940d84b9.jpeg?AWSAccessKeyId=AKIA2O4LXKVXZSNHD35Z&Expires=1653172663&Signature=xOh47CxBF6lgvGoRQ7A976C2xjU%3D"
       properties:
         id:
           type: integer
-          description: Unique identifier for the given user.
+          description: Unique identifier for the given product
         sku:
           type: string
         genericName:
@@ -152,7 +262,7 @@ components:
         errorCode:
           type: string
         message:
-          type: string
+          type: string    
     PageMeta:
       title: PageMeta
       type: object
@@ -198,3 +308,139 @@ components:
           type: string
         description:
           type: string
+    FileProductsLoad:
+      title: File with info of products to be loaded
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+      required:
+        - file
+    FileFieldError:
+      title: Errors in field validation
+      type: array
+      properties:
+        field:
+          type: string
+          example: NOMBRE DE PRODUCTO(40)
+          description: Name of the field (column) with error
+        error:
+          type: string
+          example: Value is undefined
+          description: Details of the error
+      example: [ {"field": "NOMBRE DE PRODUCTO(40)", "error": "Value is undefined" }]
+    FileProductsError:
+      title: Products with errors in field validation
+      type: array
+      properties:
+        row:
+          type: integer
+          example: 1
+          description: Number of row in file
+        name:
+          type: string
+          example: 'Papas'
+          description: Name of the product
+        type:
+          type: string
+          example: MERCADERIA TIENDA
+          description: Type of the product
+        errors:
+          type: array
+          $ref: "#/components/schemas/FileFieldError"
+      example: [{ "row": 1, "name": "", "type": "Mercaderia tienda", "errors": [ {"field": "NOMBRE DE PRODUCTO(40)", "error": "Value is undefined" }] }]
+    FileProductsSuccessfully:
+      title: Products without errors in field validation
+      type: array
+      properties:
+        row:
+          type: integer
+          example: 2
+          description: Number of row in file
+        name:
+          type: string
+          example: Papas
+          description: Name of the product
+        type:
+          type: string
+          example: MERCADERIA TIENDA
+          description: Type of the product
+        message:
+          type: string
+          example: Product ready to be processed
+          description: Product ready to be processed
+      example: [{ "row": 2, "name": "Papas", "type": "MERCADERIA TIENDA", "message": "Product ready to be processed" }]
+    FileProductsRepeated:
+      title: Products with same barcode (SKU) in the database
+      type: array
+      properties:
+        row:
+          type: integer
+          example: 3
+          description: Number of row in file
+        name:
+          type: string
+          example: Papas
+          description: Name of the product
+        type:
+          type: string
+          example: MERCADERIA TIENDA
+          description: Type of the product
+        message:
+          type: string
+          example: Product with barcode 123456 is in the database
+          description: Product is repeated
+      example: [{ "row": 3, "name": "Papas", "type": "MERCADERIA TIENDA", "error": "Product with barcode 123456 is in the database" }]
+    FileProductsResponse:
+      title: API response after process file
+      type: object
+      properties:
+        totalRows:
+          type: number
+          example: 150
+          description: Total rows in files
+        totalProcessed:
+          type: number
+          example: 100
+          description: Total rows processed
+        errorsCount:
+          type: string
+          example: 1/3
+          description: Error counter with total
+        productsErrors:
+          type: array
+          $ref: "#/components/schemas/FileProductsError"
+          
+        successfullyCount:
+          type: string
+          example: 1/3
+          description: Successfully counter with total
+        productsSuccessfully:
+          type: array
+          $ref: "#/components/schemas/FileProductsSuccessfully"
+          example: [{ "row": 2, "product": "Papas", "type": "Mercaderia tienda", "message": "Product ready to be processed" }]
+        repeatedCount:
+          type: string
+          example: 1/3
+          description: Repeated counter with total
+        productsRepeated:
+          type: array
+          $ref: "#/components/schemas/FileProductsRepeated"
+          example: [{ "row": 3, "product": "Papas", "type": "Mercaderia tienda", "error": "Product with barcode 123456 is in the database" }]
+    ErrorFileProductsBadRequest:
+      title: Bad request
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status error code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: File can't be null
+        error:
+          type: string
+          description: Error title from the API
+          example: Bad request
