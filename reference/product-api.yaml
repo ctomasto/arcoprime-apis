@@ -63,7 +63,7 @@ paths:
             minLength: 3
           in: query
           name: value
-          description: Value of name, brand or product SKU
+          description: 'Value of name, brand or product SKU'
           required: false
         - schema:
             type: string
@@ -152,7 +152,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FileProductsResponse"
+                $ref: '#/components/schemas/FileProductsResponse'
         '400':
           description: Bad request
           content:
@@ -165,6 +165,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /product/massive/process:
+    post:
+      summary: Process products massively
+      operationId: post-product-massive-process
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileProcessingResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileProductsLoad'
+        description: ''
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: token
 components:
   schemas:
     Product:
@@ -173,7 +207,7 @@ components:
       description: ''
       examples:
         - id: 50
-          sku: "9849839"
+          sku: '9849839'
           genericName: Pisco quebranta
           type: MERCADERIA
           creationStatus: TO_BE_APPROVED
@@ -182,15 +216,15 @@ components:
             hierarchy: Bebidas alcoholicas
             category: Liquidos
           log:
-            createdAt: "2022-05-05T18:52:27.376Z"
-            updatedAt: "2022-05-05T18:52:27.376Z"
+            createdAt: '2022-05-05T18:52:27.376Z'
+            updatedAt: '2022-05-05T18:52:27.376Z'
             createdBy:
               id: 1
               name: Sergio
               lastname: Bardales
               email: sergiobardales@arcoprime.cl
             updatedBy: null
-          photoUrl: "https://arpm-mrch-pim-backend-uploads-dev.s3.amazonaws.com/product/photo/37d73d7c-878d-4861-88fc-e8c5940d84b9.jpeg?AWSAccessKeyId=AKIA2O4LXKVXZSNHD35Z&Expires=1653172663&Signature=xOh47CxBF6lgvGoRQ7A976C2xjU%3D"
+          photoUrl: 'https://arpm-mrch-pim-backend-uploads-dev.s3.amazonaws.com/product/photo/37d73d7c-878d-4861-88fc-e8c5940d84b9.jpeg?AWSAccessKeyId=AKIA2O4LXKVXZSNHD35Z&Expires=1653172663&Signature=xOh47CxBF6lgvGoRQ7A976C2xjU%3D'
       properties:
         id:
           type: integer
@@ -262,7 +296,7 @@ components:
         errorCode:
           type: string
         message:
-          type: string    
+          type: string
     PageMeta:
       title: PageMeta
       type: object
@@ -329,7 +363,9 @@ components:
           type: string
           example: Value is undefined
           description: Details of the error
-      example: [ {"field": "NOMBRE DE PRODUCTO(40)", "error": "Value is undefined" }]
+      example:
+        - field: NOMBRE DE PRODUCTO(40)
+          error: Value is undefined
     FileProductsError:
       title: Products with errors in field validation
       type: array
@@ -340,7 +376,7 @@ components:
           description: Number of row in file
         name:
           type: string
-          example: 'Papas'
+          example: Papas
           description: Name of the product
         type:
           type: string
@@ -348,8 +384,14 @@ components:
           description: Type of the product
         errors:
           type: array
-          $ref: "#/components/schemas/FileFieldError"
-      example: [{ "row": 1, "name": "", "type": "Mercaderia tienda", "errors": [ {"field": "NOMBRE DE PRODUCTO(40)", "error": "Value is undefined" }] }]
+          $ref: '#/components/schemas/FileFieldError'
+      example:
+        - row: 1
+          name: ''
+          type: Mercaderia tienda
+          errors:
+            - field: NOMBRE DE PRODUCTO(40)
+              error: Value is undefined
     FileProductsSuccessfully:
       title: Products without errors in field validation
       type: array
@@ -370,7 +412,11 @@ components:
           type: string
           example: Product ready to be processed
           description: Product ready to be processed
-      example: [{ "row": 2, "name": "Papas", "type": "MERCADERIA TIENDA", "message": "Product ready to be processed" }]
+      example:
+        - row: 2
+          name: Papas
+          type: MERCADERIA TIENDA
+          message: Product ready to be processed
     FileProductsRepeated:
       title: Products with same barcode (SKU) in the database
       type: array
@@ -391,7 +437,11 @@ components:
           type: string
           example: Product with barcode 123456 is in the database
           description: Product is repeated
-      example: [{ "row": 3, "name": "Papas", "type": "MERCADERIA TIENDA", "error": "Product with barcode 123456 is in the database" }]
+      example:
+        - row: 3
+          name: Papas
+          type: MERCADERIA TIENDA
+          error: Product with barcode 123456 is in the database
     FileProductsResponse:
       title: API response after process file
       type: object
@@ -410,24 +460,31 @@ components:
           description: Error counter with total
         productsErrors:
           type: array
-          $ref: "#/components/schemas/FileProductsError"
-          
+          $ref: '#/components/schemas/FileProductsError'
         successfullyCount:
           type: string
           example: 1/3
           description: Successfully counter with total
         productsSuccessfully:
           type: array
-          $ref: "#/components/schemas/FileProductsSuccessfully"
-          example: [{ "row": 2, "product": "Papas", "type": "Mercaderia tienda", "message": "Product ready to be processed" }]
+          $ref: '#/components/schemas/FileProductsSuccessfully'
+          example:
+            - row: 2
+              product: Papas
+              type: Mercaderia tienda
+              message: Product ready to be processed
         repeatedCount:
           type: string
           example: 1/3
           description: Repeated counter with total
         productsRepeated:
           type: array
-          $ref: "#/components/schemas/FileProductsRepeated"
-          example: [{ "row": 3, "product": "Papas", "type": "Mercaderia tienda", "error": "Product with barcode 123456 is in the database" }]
+          $ref: '#/components/schemas/FileProductsRepeated'
+          example:
+            - row: 3
+              product: Papas
+              type: Mercaderia tienda
+              error: Product with barcode 123456 is in the database
     ErrorFileProductsBadRequest:
       title: Bad request
       type: object
@@ -444,3 +501,15 @@ components:
           type: string
           description: Error title from the API
           example: Bad request
+    FileProcessingResponse:
+      title: FileProcessingResponse
+      x-stoplight:
+        id: smhptkk5whbbw
+      type: object
+      properties:
+        successfulCount:
+          type: number
+        repeatedCount:
+          type: number
+        errorCount:
+          type: number
