@@ -563,3 +563,5 @@ components:
           type: string
         name:
           type: string
+        status:
+          type: integer
