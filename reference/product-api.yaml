@@ -199,6 +199,46 @@ paths:
             type: string
           in: header
           name: token
+  '/society/{id}/distribution-channel':
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DistributionChannel'
+        '404':
+          description: Society not found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-society-id-distribution-channel
+      parameters:
+        - schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+            default: 1
+          in: query
+          name: status
+    parameters:
+      - schema:
+          type: string
+          example: ARPM
+          enum:
+            - ARPM
+        name: id
+        in: path
+        required: true
+        description: Society's id
 components:
   schemas:
     Product:
@@ -513,3 +553,13 @@ components:
           type: number
         errorCount:
           type: number
+    DistributionChannel:
+      title: DistributionChannel
+      x-stoplight:
+        id: 8b8vuf08gde79
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
