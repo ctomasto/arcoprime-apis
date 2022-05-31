@@ -239,6 +239,29 @@ paths:
         in: path
         required: true
         description: Society's id
+  '/product/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Id of the product in database
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetail'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      operationId: get-product-id
 components:
   schemas:
     Product:
@@ -565,3 +588,72 @@ components:
           type: string
         status:
           type: integer
+    ProductDetail:
+      title: ProductDetail
+      x-stoplight:
+        id: 0pol8q4lbx9oc
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        barcode:
+          $ref: '#/components/schemas/Barcode'
+        deliveryDays:
+          type: string
+        baseUnitMeassure:
+          type: string
+        orderUnitMeassure:
+          type: string
+        baseUnitConversion:
+          type: string
+        tax:
+          type: string
+          enum:
+            - AFECTO
+            - EXENTO
+        brand:
+          $ref: '#/components/schemas/Brand'
+        classification:
+          $ref: '#/components/schemas/ClassificationLevel'
+        itemGroup:
+          $ref: '#/components/schemas/ItemGroup'
+    Barcode:
+      title: Barcode
+      x-stoplight:
+        id: 5u4qgkw4ua6p2
+      type: object
+      properties:
+        type:
+          type: string
+        code:
+          type: string
+        status:
+          type: string
+      required:
+        - type
+        - code
+        - status
+    Brand:
+      title: Brand
+      x-stoplight:
+        id: i0hqtymkwr0jx
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+    ItemGroup:
+      title: ItemGroup
+      x-stoplight:
+        id: ym704jviv395i
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
