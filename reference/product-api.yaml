@@ -259,8 +259,16 @@ paths:
                 $ref: '#/components/schemas/ProductDetail'
         '404':
           description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       operationId: get-product-id
 components:
   schemas:
@@ -593,23 +601,68 @@ components:
       x-stoplight:
         id: 0pol8q4lbx9oc
       type: object
+      description: ''
       properties:
         id:
           type: string
-        name:
+        genericName:
           type: string
         type:
           type: string
+          enum:
+            - MERCADERIA
         barcode:
           $ref: '#/components/schemas/Barcode'
         deliveryDays:
-          type: string
+          type: number
         baseUnitMeassure:
           type: string
+          enum:
+            - UN
+            - CJ
+            - CA
+            - CAJ
+            - CT
+            - FR
+            - BR
+            - BID
+            - BOL
+            - LC
+            - CLD
+            - DTE
+            - LTA
+            - PQT
+            - TRR
+            - CM3
+            - L
+            - G
+            - KG
+            - PAC
         orderUnitMeassure:
           type: string
+          enum:
+            - UN
+            - CJ
+            - CA
+            - CAJ
+            - CT
+            - FR
+            - BR
+            - BID
+            - BOL
+            - LC
+            - CLD
+            - DTE
+            - LTA
+            - PQT
+            - TRR
+            - CM3
+            - L
+            - G
+            - KG
+            - PAC
         baseUnitConversion:
-          type: string
+          type: number
         tax:
           type: string
           enum:
@@ -631,10 +684,18 @@ components:
       properties:
         type:
           type: string
+          enum:
+            - EAN
+            - UPC
+            - JAN
+            - ISBN
+            - SIN_REFERENCIA
         code:
           type: string
         status:
           type: string
+          enum:
+            - PRINCIPAL
       required:
         - type
         - code
