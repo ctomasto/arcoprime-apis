@@ -611,8 +611,10 @@ components:
           type: string
           enum:
             - MERCADERIA
-        barcode:
-          $ref: '#/components/schemas/Barcode'
+        barcodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Barcode'
         deliveryDays:
           type: number
         baseUnitMeassure:
