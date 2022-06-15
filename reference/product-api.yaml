@@ -270,6 +270,139 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       operationId: get-product-id
+    patch:
+      summary: Update product
+      operationId: patch-update-product-id
+      tags:
+        - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProduct'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetail'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /catalog/storage-condition:
+    get:
+      summary: Catalog items
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+      operationId: get-catalog
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/transport-mode:
+    get:
+      summary: Catalog items
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+      operationId: get-catalog
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/measurement-unit:
+    get:
+      summary: Catalog items
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+      operationId: get-catalog
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/supply-type:
+    get:
+      summary: Catalog items
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+      operationId: get-catalog
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/content-type:
+    get:
+      summary: Catalog items
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+      operationId: get-catalog
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/food-attributes:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FoodAttribute'
+        '400':
+          description: Bad Request
+      operationId: get-catalog-food-attributes
+      description: List the food-attribute options
+      parameters:
+        - schema:
+            type: integer
+            minimum: 1
+            maximum: 2
+          in: query
+          name: status
 components:
   schemas:
     Product:
@@ -610,7 +743,13 @@ components:
         type:
           type: string
           enum:
-            - MERCADERIA
+            - MERCADERIA TIENDA
+            - SET VENTA
+            - COMBOS
+            - INSUMO MATERIA PRIMA
+            - INSUMO MP GASTO
+            - INSUMO PACKAGING-ENVASADO
+            - RECETA
         barcodes:
           type: array
           items:
@@ -678,6 +817,22 @@ components:
           $ref: '#/components/schemas/ClassificationLevel'
         itemGroup:
           $ref: '#/components/schemas/ItemGroup'
+        logisticDimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogisticDimensions'
+        foodAttributesProductConfig:
+          type: array
+          items:
+            $ref: '#/components/schemas/FoodAttributesProductConfig'
+        expiringDays:
+          type: number
+        salesFormatId:
+          type: number
+        contentTypeId:
+          type: number
+        contentQuantity:
+          type: number
     Barcode:
       title: Barcode
       x-stoplight:
@@ -722,3 +877,192 @@ components:
           type: string
         name:
           type: string
+    CatalogItem:
+      title: CatalogItem
+      x-stoplight:
+        id: 66a8slnmc5bpj
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    LogisticDimensions:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - PRODUCTO
+            - ENVASE
+            - EMBALAJE
+            - PALET
+        heightValue:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 9999.99
+        heightUnitMeasure:
+          type: string
+          enum:
+            - CM
+        widthValue:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 9999.99
+        widthUnitMeasure:
+          type: string
+          enum:
+            - CM
+        lengthValue:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 9999.99
+        lengthUnitMeasure:
+          type: string
+          enum:
+            - CM
+        weightValue:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 9999.99
+        weightUnitMeasure:
+          type: string
+          enum:
+            - KILOGRAMO
+        quantityPerDisplay:
+          type: number
+          minimum: 0
+        codeType:
+          type: string
+          enum:
+            - DUN14
+        codeValue:
+          type: string
+    FoodAttributesProductConfig:
+      type: object
+      properties:
+        foodAttributeId:
+          type: number
+        value:
+          type: string
+          enum:
+            - SI
+            - 'NO'
+            - NO APLICA
+        status:
+          type: number
+          default: 1
+    UpdateProduct:
+      title: Product to be update
+      type: object
+      description: Product to be update
+      properties:
+        genericName:
+          type: string
+        barcodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Barcode'
+        deliveryDays:
+          type: number
+        baseUnitMeassure:
+          type: string
+          enum:
+            - UN
+            - CJ
+            - CA
+            - CAJ
+            - CT
+            - FR
+            - BR
+            - BID
+            - BOL
+            - LC
+            - CLD
+            - DTE
+            - LTA
+            - PQT
+            - TRR
+            - CM3
+            - L
+            - G
+            - KG
+            - PAC
+        orderUnitMeassure:
+          type: string
+          enum:
+            - UN
+            - CJ
+            - CA
+            - CAJ
+            - CT
+            - FR
+            - BR
+            - BID
+            - BOL
+            - LC
+            - CLD
+            - DTE
+            - LTA
+            - PQT
+            - TRR
+            - CM3
+            - L
+            - G
+            - KG
+            - PAC
+        baseUnitConversion:
+          type: number
+        tax:
+          type: string
+          enum:
+            - AFECTO
+            - EXENTO
+        hasBrand:
+          type: boolean
+        brand:
+          $ref: '#/components/schemas/Brand'
+        classification:
+          $ref: '#/components/schemas/ClassificationLevel'
+        itemGroup:
+          $ref: '#/components/schemas/ItemGroup'
+        logisticDimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogisticDimensions'
+        foodAttributesProductConfig:
+          type: array
+          items:
+            $ref: '#/components/schemas/FoodAttributesProductConfig'
+        expiringDays:
+          type: number
+        salesFormatId:
+          type: number
+        contentTypeId:
+          type: number
+        contentQuantity:
+          type: number
+    FoodAttribute:
+      title: FoodAttribute
+      x-stoplight:
+        id: 7b3v7hi0k14n0
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        category:
+          type: string
+          enum:
+            - FOOD-CONDITIONS
+            - NUTRITIONAL_INFORMATION
+        imageCode:
+          type: string
+        status:
+          type: integer
+      description: ''
