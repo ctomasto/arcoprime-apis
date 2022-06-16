@@ -279,7 +279,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateProduct'
+              $ref: '#/components/schemas/ProductDetail'
       responses:
         '200':
           description: OK
@@ -729,110 +729,6 @@ components:
           type: string
         status:
           type: integer
-    ProductDetail:
-      title: ProductDetail
-      x-stoplight:
-        id: 0pol8q4lbx9oc
-      type: object
-      description: ''
-      properties:
-        id:
-          type: integer
-        genericName:
-          type: string
-        type:
-          type: string
-          enum:
-            - MERCADERIA TIENDA
-            - SET VENTA
-            - COMBOS
-            - INSUMO MATERIA PRIMA
-            - INSUMO MP GASTO
-            - INSUMO PACKAGING-ENVASADO
-            - RECETA
-        barcodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Barcode'
-        deliveryDays:
-          type: number
-        baseUnitMeassure:
-          type: string
-          enum:
-            - UN
-            - CJ
-            - CA
-            - CAJ
-            - CT
-            - FR
-            - BR
-            - BID
-            - BOL
-            - LC
-            - CLD
-            - DTE
-            - LTA
-            - PQT
-            - TRR
-            - CM3
-            - L
-            - G
-            - KG
-            - PAC
-        orderUnitMeassure:
-          type: string
-          enum:
-            - UN
-            - CJ
-            - CA
-            - CAJ
-            - CT
-            - FR
-            - BR
-            - BID
-            - BOL
-            - LC
-            - CLD
-            - DTE
-            - LTA
-            - PQT
-            - TRR
-            - CM3
-            - L
-            - G
-            - KG
-            - PAC
-        baseUnitConversion:
-          type: number
-        tax:
-          type: string
-          enum:
-            - AFECTO
-            - EXENTO
-        hasBrand:
-          type: boolean
-        brand:
-          $ref: '#/components/schemas/Brand'
-        classification:
-          $ref: '#/components/schemas/ClassificationLevel'
-        itemGroup:
-          $ref: '#/components/schemas/ItemGroup'
-        logisticDimensions:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogisticDimensions'
-        foodAttributesProductConfig:
-          type: array
-          items:
-            $ref: '#/components/schemas/FoodAttributesProductConfig'
-        expiringDays:
-          type: number
-        salesFormatId:
-          type: number
-        contentTypeId:
-          type: number
-        contentQuantity:
-          type: number
     Barcode:
       title: Barcode
       x-stoplight:
@@ -846,7 +742,6 @@ components:
             - UPC
             - JAN
             - ISBN
-            - SIN_REFERENCIA
         code:
           type: string
         status:
@@ -890,6 +785,8 @@ components:
     LogisticDimensions:
       type: object
       properties:
+        id:
+          type: number
         type:
           type: string
           enum:
@@ -932,20 +829,24 @@ components:
         weightUnitMeasure:
           type: string
           enum:
-            - KILOGRAMO
+            - KILOGRAMO(S)
         quantityPerDisplay:
           type: number
           minimum: 0
+          maximum: 99999
         codeType:
           type: string
           enum:
             - DUN14
         codeValue:
           type: string
-    FoodAttributesProductConfig:
+    FoodAttributeProductConfig:
       type: object
+      title: FoodAttributeConfigDto
       properties:
-        foodAttributeId:
+        idFoodAttributeProductConfig:
+          type: number
+        idFoodAttribute:
           type: number
         value:
           type: string
@@ -953,10 +854,11 @@ components:
             - SI
             - 'NO'
             - NO APLICA
-        status:
-          type: number
-          default: 1
-    UpdateProduct:
+      required:
+        - idFoodAttributeProductConfig
+        - idFoodAttribute
+        - value
+    ProductDetail:
       title: Product to be update
       type: object
       description: Product to be update
@@ -1041,11 +943,54 @@ components:
         expiringDays:
           type: number
         salesFormatId:
-          type: number
+          type: string
+          enum:
+            - BA
+            - BL
+            - BS
+            - BT
+            - CJ
+            - ES
+            - FR
+            - LT
+            - PK
+            - PQ
+            - SB
+            - TB
+            - TJ
+            - TR
+            - TT
         contentTypeId:
-          type: number
+          type: string
+          enum:
+            - LT
+            - GR
+            - KG
+            - CM3
         contentQuantity:
           type: number
+        supplyTypeId:
+          type: string
+          enum:
+            - HB
+            - PC
+            - PD
+            - SR
+        transportModeId:
+          type: string
+          enum:
+            - CG
+            - LG
+            - PL
+            - RF
+        storageConditionId:
+          type: string
+          enum:
+            - CG
+            - CT
+            - ES
+            - RF
+            - TA
     FoodAttribute:
       title: FoodAttribute
       x-stoplight:
