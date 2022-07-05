@@ -10,12 +10,15 @@ info:
     url: 'https://arcoprime.cl/'
   x-logo:
     url: 'https://www.prontocopec.cl/pronto/site/artic/20170516/imag/foto_0000000320170516112513.png'
-    altText: Pronto Copec
+    altText: PIM Pronto Copec
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
   - url: 'http://localhost:3000'
+    description: Localhost
+  - url: 'https://10nor47a33.execute-api.us-east-1.amazonaws.com/dev'
+    description: Development sandbox
 tags:
   - name: geography
     description: 'Operations about geography functionalities just like countries, regions, cities and communes info'
@@ -23,10 +26,14 @@ tags:
     description: 'Operations about files functionalities just like upload, download or update a file'
   - name: users
     description: Operations about system users
+  - name: groups
+    description: Operations about system groups
   - name: supplier
     description: Operations about suppliers
   - name: product
     description: Operations about products
+  - name: validations
+    description: Services from vaildations in backend
 x-tagGroups:
   - name: General
     tags:
@@ -41,13 +48,16 @@ x-tagGroups:
   - name: System management
     tags:
       - users
+      - groups
+  - name: Validations
+    tags:
+    - validations
 paths:
   /helpers/country:
     get:
       tags:
-        - geography
+      - geography
       summary: Get countries
-      description: Returns a list of country
       operationId: get-helpers-country
       responses:
         '200':
@@ -58,21 +68,63 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Country'
-  '/helpers/country/{id}':
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '404':
+          description: Countries not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCountriesNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
+  /helpers/country/{id}:
     get:
       tags:
-        - geography
+      - geography
       summary: Get one country
       description: Returns a single country
       operationId: get-helpers-one-country
       parameters:
-        - name: id
-          in: path
-          description: ID of country to return
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: id
+        in: path
+        description: ID of country to return
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         '200':
           description: Successful operation
@@ -82,12 +134,56 @@ paths:
                 $ref: '#/components/schemas/CountryDetail'
         '400':
           description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCountryInvalidId'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
         '404':
           description: Country not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCountryNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
   /helpers/region:
     get:
       tags:
-        - geography
+      - geography
       summary: Get regions
       description: Returns all the regions of one country
       operationId: get-helpers-region
@@ -102,27 +198,67 @@ paths:
                   $ref: '#/components/schemas/Region'
         '400':
           description: Invalid country code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRegionInvalidCountryCode'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
       parameters:
         - schema:
             type: string
             example: CHL
           in: query
           name: countryCode
-  '/helpers/region/{id}':
+  /helpers/region/{id}:
     get:
       tags:
-        - geography
+      - geography
       summary: Get one region
       description: Returns a single region
       operationId: get-helpers-one-region
       parameters:
-        - name: id
-          in: path
-          description: ID of region to return
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: id
+        in: path
+        description: ID of region to return
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         '200':
           description: Successful operation
@@ -132,12 +268,56 @@ paths:
                 $ref: '#/components/schemas/Region'
         '400':
           description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRegionInvalidId'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
         '404':
           description: Region not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRegionNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
   /helpers/commune:
     get:
       tags:
-        - geography
+      - geography
       summary: Get communes
       description: Returns all the communes of one region
       operationId: get-helpers-commune
@@ -152,27 +332,67 @@ paths:
                   $ref: '#/components/schemas/Commune'
         '400':
           description: Invalid region code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCommuneInvalidRegionCode'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
       parameters:
         - schema:
             type: number
             example: 2824
           in: query
           name: regionCode
-  '/helpers/commune/{id}':
+  /helpers/commune/{id}:
     get:
       tags:
-        - geography
+      - geography
       summary: Get one commune
       description: Returns a single commune
       operationId: get-helpers-one-commune
       parameters:
-        - name: id
-          in: path
-          description: ID of commune to return
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: id
+        in: path
+        description: ID of commune to return
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         '200':
           description: Successful operation
@@ -182,12 +402,56 @@ paths:
                 $ref: '#/components/schemas/Commune'
         '400':
           description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCommuneInvalidId'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
         '404':
           description: Commune not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCommuneNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
   /helpers/city:
     get:
       tags:
-        - geography
+      - geography
       summary: Get cities
       description: Returns all the cities of one commune
       operationId: get-helpers-city
@@ -202,27 +466,67 @@ paths:
                   $ref: '#/components/schemas/City'
         '400':
           description: Invalid commune code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCityInvalidCommuneCode'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
       parameters:
         - schema:
             type: number
             example: 295
           in: query
           name: communeCode
-  '/helpers/city/{id}':
+  /helpers/city/{id}:
     get:
       tags:
-        - geography
+      - geography
       summary: Get one city
       description: Returns a single city
       operationId: get-helpers-one-city
       parameters:
-        - name: id
-          in: path
-          description: ID of city to return
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: id
+        in: path
+        description: ID of city to return
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         '200':
           description: Successful operation
@@ -232,8 +536,52 @@ paths:
                 $ref: '#/components/schemas/City'
         '400':
           description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCityInvalidId'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
         '404':
           description: City not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCityNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
   '/helpers/file/{uuid}':
     get:
       tags:
@@ -255,24 +603,55 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                format: binary
+                $ref: '#/components/schemas/File'
         '400':
-          description: Invalid UUID supplied
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorFileInvalidUuid'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
         '404':
           description: File not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorFileNotFound'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '503':
           description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
         '504':
           description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
     delete:
       tags:
         - files
@@ -289,17 +668,59 @@ paths:
             format: int64
       responses:
         '200':
-          description: Successful operation
+          description: File deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileDeleted'
         '400':
-          description: Invalid UUID supplied
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorFileInvalidUuid'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
         '404':
           description: File not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorFileNotFound'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
   /helpers/file:
     post:
       tags:
@@ -309,17 +730,9 @@ paths:
       operationId: post-upload-file
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: object
-              properties:
-                domain:
-                  type: string
-                content:
-                  type: string
-                file:
-                  type: string
-                  format: binary
+              $ref: '#/components/schemas/FileUpload'
       responses:
         '201':
           description: Created
@@ -336,9 +749,539 @@ paths:
                 required:
                   - code
         '400':
-          description: Bad Request
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorFileBadRequest'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
+  '/helpers/files/{uuids}':
+    get:
+      tags:
+        - files
+      summary: Get various files
+      description: Returns various uploaded files
+      operationId: get-various-uploaded-files
+      parameters:
+        - name: uuids
+          in: path
+          description: List of UUID's of files to return, concatenated with &
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/File'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorFileInvalidUuid'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '404':
+          description: File not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorFileNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
+  /helpers/rut/{rut}:
+    get:
+      tags:
+      - validations
+      summary: Valid a chilean RUT
+      description: Returns if a RUT is valid or not
+      operationId: get-helpers-validate-rut
+      parameters:
+      - name: rut
+        in: path
+        description: RUT to validate
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidRUT'
+        '400':
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRUTInvalid'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
+  /system/users:
+    get:
+      tags:
+      - users
+      summary: Get system users
+      operationId: get-system-users
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '404':
+          description: Users not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUsersNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
+  /system/users/{id}:
+    get:
+      tags:
+      - users
+      summary: Get one user
+      description: Returns a single user
+      operationId: get-system-one-user
+      parameters:
+      - name: id
+        in: path
+        description: ID of user to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUserInvalidId'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUserNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
+  /system/groups:
+    get:
+      tags:
+      - groups
+      summary: Get system groups
+      operationId: get-system-groups
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '404':
+          description: Groups not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGroupsNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
+  /system/groups/{id}:
+    get:
+      tags:
+      - groups
+      summary: Get one group
+      description: Returns a single group
+      operationId: get-system-one-group
+      parameters:
+      - name: id
+        in: path
+        description: ID of group to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGroupInvalidId'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorGroupNotFound'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
+  /system/token/{token}:
+    get:
+      tags:
+      - validations
+      summary: Valid a token
+      description: Returns if a token is valid or not
+      operationId: get-system-validate-token
+      parameters:
+      - name: token
+        in: path
+        description: Token to validate
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidToken'
+        '400':
+          description: Invalid token supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTokenInvalid'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnauthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorForbidden'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorUnavailable'
+        '504':
+          description: Gateway timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorTimeout'
 components:
   schemas:
+    Error:
+      title: Error
+      type: object
+      properties:
+        message:
+          type: string
+          example: Internal server error
+    ErrorUnauthorized:
+      title: Unauthorized
+      type: object
+      properties:
+        error:
+          type: string
+          description: Token is invalid or expired
+          example: Token is invalid or expired
+    ErrorForbidden:
+      title: Forbidden
+      type: object
+      properties:
+        error:
+          type: string
+          description: Forbidden request
+          example: Forbidden
+    ErrorUnavailable:
+      title: Service unavailable
+      type: object
+      properties:
+        error:
+          type: string
+          description: Service unavailable
+          example: Service unavailable
+    ErrorTimeout:
+      title: Gateway timeout
+      type: object
+      properties:
+        error:
+          type: string
+          description: Gateway timeout
+          example: Gateway timeout
     Country:
       title: Country
       type: object
@@ -358,7 +1301,7 @@ components:
         phonePrefix:
           type: string
           description: International phone code of the country
-          example: '+56'
+          example: "+56"
     CountryDetail:
       title: Country
       type: object
@@ -382,7 +1325,31 @@ components:
         phonePrefix:
           type: string
           description: International phone code of the country
-          example: '+56'
+          example: "+56"
+    ErrorCountriesNotFound:
+      title: Country not found
+      type: object
+      properties:
+        error:
+          type: string
+          description: Countries not found
+          example: "[]"
+    ErrorCountryInvalidId:
+      title: Invalid id
+      type: object
+      properties:
+        error:
+          type: string
+          description: Invalid id of country
+          example: "Invalid id of country"
+    ErrorCountryNotFound:
+      title: Country not found
+      type: object
+      properties:
+        error:
+          type: string
+          description: Country not found
+          example: "Country not found"
     Region:
       title: Region
       type: object
@@ -394,11 +1361,35 @@ components:
         name:
           type: string
           description: Name of the region in database
-          example: Región Metropolitana de Santiago
+          example: "Región Metropolitana de Santiago"
         countryId:
           type: number
           description: Id of the parent country in database
           example: 44
+    ErrorRegionInvalidCountryCode:
+      title: Invalid country code
+      type: object
+      properties:
+        error:
+          type: string
+          description: Invalid code of the country
+          example: The countryCode must have 3 characters
+    ErrorRegionInvalidId:
+      title: Invalid id
+      type: object
+      properties:
+        error:
+          type: string
+          description: Invalid id of region
+          example: Invalid id of region
+    ErrorRegionNotFound:
+      title: Region not found
+      type: object
+      properties:
+        error:
+          type: string
+          description: Description of the error
+          example: Region not found
     Commune:
       title: Commune
       type: object
@@ -410,7 +1401,7 @@ components:
         name:
           type: string
           description: Name of the commune in database
-          example: Santiago
+          example: "Santiago"
         regionId:
           type: number
           description: Id of the parent region in database
@@ -419,6 +1410,30 @@ components:
           type: number
           description: Id of the parent country in database
           example: 44
+    ErrorCommuneInvalidRegionCode:
+      title: Invalid region code
+      type: object
+      properties:
+        error:
+          type: string
+          description: Invalid code of the region
+          example: You must provide a regionCode in query params
+    ErrorCommuneInvalidId:
+      title: Invalid id
+      type: object
+      properties:
+        error:
+          type: string
+          description: Invalid id of commune
+          example: Invalid id of commune
+    ErrorCommuneNotFound:
+      title: Commune not found
+      type: object
+      properties:
+        error:
+          type: string
+          description: Commune not found
+          example: Commune not found
     City:
       title: City
       type: object
@@ -430,7 +1445,7 @@ components:
         name:
           type: string
           description: Name of the city in database
-          example: Santiago
+          example: "Santiago"
         communeId:
           type: number
           description: Id of the parent commune in database
@@ -443,11 +1458,294 @@ components:
           type: number
           description: Id of the parent country in database
           example: 44
-    Error:
-      title: Error
+    ErrorCityInvalidCommuneCode:
+      title: Invalid commune code
       type: object
       properties:
-        userMessage:
+        error:
           type: string
-        internalException:
+          description: Invalid code of the commune
+          example: You must provide a communeCode in query params
+    ErrorCityInvalidId:
+      title: Invalid id
+      type: object
+      properties:
+        error:
           type: string
+          description: Invalid id of city
+          example: Invalid id of city
+    ErrorCityNotFound:
+      title: City not found
+      type: object
+      properties:
+        error:
+          type: string
+          description: City not found
+          example: City not found
+    File:
+      title: File
+      type: object
+      properties:
+        code:
+          type: string
+          description: Internal UUID of the file in database and S3 storage
+          example: db452a80-56a7-474e-a098-48e49ec5f5f3
+        name:
+          type: string
+          description: Real name of the file
+          example: sample.jpg
+        type:
+          type: string
+          description: Type/extension of the file
+          example: .jpg
+        size:
+          type: number
+          description: Size in kilobytes of the file
+          example: 134
+        url:
+          type: string
+          description: Type/extension of the file
+          example: https://arpm-mrch-pim-backend-uploads-dev.s3.amazonaws.com/supplier/rol/sample.jpg?AWSAccessKeyId=ABCASDASDASDAS
+    FileUpload:
+      title: File upload
+      type: object
+      properties:
+        domain:
+          type: string
+          enum:
+            - SUPPLIER
+            - PRODUCT
+        content:
+          type: string
+          enum:
+            - ROL
+            - PEP
+            - RUT
+            - PHOTO
+        file:
+          type: string
+          format: binary
+      required:
+        - domain
+        - content
+        - file
+    FileDeleted:
+      title: File deleted
+      type: object
+      properties:
+        message:
+          type: string
+          description: Answer message from the API
+          example: File was deleted
+    ErrorFileBadRequest:
+      title: Bad request
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message from the API
+          example: File can't be empty
+    ErrorFileInvalidUuid:
+      title: Invalid UUID
+      type: object
+      properties:
+        error:
+          type: string
+          description: Invalid UUID of file
+          example: Invalid UUID of file
+    ErrorFileNotFound:
+      title: File not found
+      type: object
+      properties:
+        error:
+          type: string
+          description: File not found
+          example: File not found
+    ValidRUT:
+      title: Valid RUT
+      type: object
+      properties:
+        isValidRUT:
+          type: boolean
+          description: RUT is valid
+          example: true
+    ErrorRUTInvalid:
+      title: Invalid RUT
+      type: object
+      properties:
+        isValidRUT:
+          type: boolean
+          description: RUT is not valid
+          example: false
+    User:
+      title: User
+      type: object
+      properties:
+        id:
+          type: number
+          description: Id of the user in database
+          example: 1
+        firstName:
+          type: string
+          description: First name of the user
+          example: Francisco
+        lastName:
+          type: string
+          description: Last name of the user
+          example: De La Cruz
+        email:
+          type: string
+          description: Electronic mail address of the user
+          example: fdelacruz@arcoprime.cl
+        isActive:
+          type: boolean
+          description: User is active or not
+          example: true
+        createdAt:
+          type: string
+          description: Date of creation of the user
+          example: "2022-05-04T00:00:00.000Z"
+        updatedAt:
+          type: string
+          description: Date of last update of the user
+          example: "2022-05-04T00:00:00.000Z"
+    ErrorUsersNotFound:
+      title: Users not found
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code of the error
+          example: 404
+        message:
+          type: string
+          description: Error message
+          example: Users not found
+        error:
+          type: string
+          description: Details of the error
+          example: Not found
+    ErrorUserInvalidId:
+      title: Invalid id
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code of the error
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: Invalid id
+        error:
+          type: string
+          description: Details of the error
+          example: Bad Request
+    ErrorUserNotFound:
+      title: User not found
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code of the error
+          example: 404
+        message:
+          type: string
+          description: Error message
+          example: User not found
+        error:
+          type: string
+          description: Details of the error
+          example: Not found
+    Group:
+      title: Group
+      type: object
+      properties:
+        id:
+          type: number
+          description: Id of the group in database
+          example: 1
+        name:
+          type: string
+          description: Name of the group
+          example: Compradores
+        description:
+          type: string
+          description: Description of the group
+          example: Grupo de compradores
+        isActive:
+          type: boolean
+          description: Group is active or not
+          example: true
+        createdAt:
+          type: string
+          description: Date of creation of the group
+          example: "2022-05-04T00:00:00.000Z"
+        updatedAt:
+          type: string
+          description: Date of last update of the group
+          example: "2022-05-04T00:00:00.000Z"
+    ErrorGroupsNotFound:
+      title: Groups not found
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code of the error
+          example: 404
+        message:
+          type: string
+          description: Error message
+          example: Groups not found
+        error:
+          type: string
+          description: Details of the error
+          example: Not found
+    ErrorGroupInvalidId:
+      title: Invalid id
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code of the error
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: Invalid id
+        error:
+          type: string
+          description: Details of the error
+          example: Bad Request
+    ErrorGroupNotFound:
+      title: Group not found
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code of the error
+          example: 404
+        message:
+          type: string
+          description: Error message
+          example: Group not found
+        error:
+          type: string
+          description: Details of the error
+          example: Not found
+    ValidToken:
+      title: Valid token
+      type: object
+      properties:
+        isValid:
+          type: boolean
+          description: Token is valid
+          example: true
+    ErrorTokenInvalid:
+      title: Invalid token
+      type: object
+      properties:
+        isValid:
+          type: boolean
+          description: Token is not valid
+          example: false
