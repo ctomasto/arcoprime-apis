@@ -301,8 +301,9 @@ paths:
                 $ref: '#/components/schemas/Error'
   /catalog/storage-condition:
     get:
-      summary: Catalog items
-      tags: []
+      summary: Storage condition
+      tags:
+        - catalog
       responses:
         '200':
           description: OK
@@ -312,13 +313,20 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CatalogItem'
-      operationId: get-catalog
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-storage-condition
       description: 'List all elements from catalog according to the type, ordered by name ASC'
     parameters: []
   /catalog/transport-mode:
     get:
-      summary: Catalog items
-      tags: []
+      summary: Transport mode
+      tags:
+        - catalog
       responses:
         '200':
           description: OK
@@ -328,13 +336,20 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CatalogItem'
-      operationId: get-catalog
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-transport-mode
       description: 'List all elements from catalog according to the type, ordered by name ASC'
     parameters: []
   /catalog/measurement-unit:
     get:
-      summary: Catalog items
-      tags: []
+      summary: Measurement unit
+      tags:
+        - catalog
       responses:
         '200':
           description: OK
@@ -344,13 +359,20 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CatalogItem'
-      operationId: get-catalog
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-measurement-unit
       description: 'List all elements from catalog according to the type, ordered by name ASC'
     parameters: []
   /catalog/supply-type:
     get:
-      summary: Catalog items
-      tags: []
+      summary: Supply type
+      tags:
+        - catalog
       responses:
         '200':
           description: OK
@@ -360,13 +382,20 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CatalogItem'
-      operationId: get-catalog
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-supply-type
       description: 'List all elements from catalog according to the type, ordered by name ASC'
     parameters: []
   /catalog/content-type:
     get:
-      summary: Catalog items
-      tags: []
+      summary: Content type
+      tags:
+        - catalog
       responses:
         '200':
           description: OK
@@ -376,9 +405,211 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CatalogItem'
-      operationId: get-catalog
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-content-type
       description: 'List all elements from catalog according to the type, ordered by name ASC'
     parameters: []
+  /catalog/distribution-channel:
+    get:
+      summary: Distribution channel
+      tags:
+        - catalog
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-distribution-channel
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/barcode-type:
+    get:
+      summary: Barcode types
+      tags:
+        - catalog
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-barcode-type
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/item-group:
+    get:
+      summary: Item group
+      tags:
+        - catalog
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-item-group
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/tax:
+    get:
+      summary: Specific tax
+      tags:
+        - catalog
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-tax
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/ecommerce-channel:
+    get:
+      summary: E-commerce channels
+      tags:
+        - catalog
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-ecommerce-channel
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /catalog/document-type:
+    get:
+      summary: Document type
+      tags:
+        - catalog
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-catalog-document-type
+      description: 'List all elements from catalog according to the type, ordered by name ASC'
+    parameters: []
+  /brand:
+    parameters:
+      - schema:
+          type: string
+        in: query
+        name: name
+        description: Name of the brand
+        required: false
+    get:
+      summary: Get all brand
+      tags:
+        - brand
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-all-brand
+      description: 'List all brands from catalog according to the type, ordered by name ASC'
+  '/brand/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Id of the brand in database
+    get:
+      summary: Get one brand
+      tags:
+        - brand
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogItem'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: get-one-brand
+      description: 'List one brand from catalog according to the type, ordered by name ASC'
   /catalog/food-attributes:
     get:
       summary: Your GET endpoint
@@ -735,7 +966,7 @@ components:
         id: 5u4qgkw4ua6p2
       type: object
       properties:
-        type:
+        barcodeTypeId:
           type: string
           enum:
             - EAN
@@ -749,7 +980,7 @@ components:
           enum:
             - PRINCIPAL
       required:
-        - type
+        - barcodeTypeId
         - code
         - status
     Brand:
@@ -862,6 +1093,71 @@ components:
       title: Product to be update
       type: object
       description: Product to be update
+      examples:
+        - genericName: string
+          barcodes:
+            - barcodeTypeId: EAN
+              code: string
+              status: PRINCIPAL
+          deliveryDays: 0
+          baseUnitMeasureId: UN
+          orderUnitId: UN
+          baseConversionUnit: 2
+          tax: AFECTO
+          hasBrand: true
+          brandId: 1
+          itemGroupId: 01001CP06
+          logisticDimensions:
+            - id: 0
+              type: PRODUCTO
+              heightValue: 1
+              heightUnitMeasure: CM
+              widthValue: 1
+              widthUnitMeasure: CM
+              lengthValue: 1
+              lengthUnitMeasure: CM
+              weightValue: 1
+              weightUnitMeasure: KILOGRAMO(S)
+              quantityPerDisplay: 0
+              codeType: DUN14
+              codeValue: string
+          foodAttributesProductConfig:
+            - idFoodAttributeProductConfig: 0
+              idFoodAttribute: 0
+              value: SI
+          expiringDays: 1
+          salesFormatId: BA
+          contentTypeId: LT
+          contentQuantity: 1
+          supplyTypeId: HB
+          transportModeId: CG
+          storageConditionId: CG
+          distributionChannels:
+            - idDistributionChannel: DC01
+          specificTaxId: AGUAS
+          photos:
+            - id: 1
+              productId: 147
+              code: db452a80-56a7-474e-a098-48e49ec5f5f3
+              isPrincipal: true
+              status: 1
+              name: sample.jpg
+              type: .jpg
+              size: 134
+              url: 'https://arpm-mrch-pim-backend-uploads-dev.s3.amazonaws.com/supplier/rol/sample.jpg?AWSAccessKeyId=ABCASDASDASDAS'
+          nameInInternalChannel: string
+          nameInExternalChannel: string
+          description: string
+          ecommerceChannels:
+            - SCAN&GO
+            - AUTOSERVICIO
+            - AGREGADORES
+          ecommerceDocuments:
+            - id: 1
+              productId: 147
+              documentTypeId: ESPECIFICACIONES
+              code: db452a80-56a7-474e-a098-48e49ec5f5f3
+              status: 1
       properties:
         genericName:
           type: string
@@ -871,7 +1167,7 @@ components:
             $ref: '#/components/schemas/Barcode'
         deliveryDays:
           type: number
-        baseUnitMeassure:
+        baseUnitMeasureId:
           type: string
           enum:
             - UN
@@ -894,7 +1190,7 @@ components:
             - G
             - KG
             - PAC
-        orderUnitMeassure:
+        orderUnitId:
           type: string
           enum:
             - UN
@@ -917,8 +1213,9 @@ components:
             - G
             - KG
             - PAC
-        baseUnitConversion:
+        baseConversionUnit:
           type: number
+          minimum: 2
         tax:
           type: string
           enum:
@@ -926,12 +1223,20 @@ components:
             - EXENTO
         hasBrand:
           type: boolean
-        brand:
-          $ref: '#/components/schemas/Brand'
-        classification:
-          $ref: '#/components/schemas/ClassificationLevel'
-        itemGroup:
-          $ref: '#/components/schemas/ItemGroup'
+        brandId:
+          type: number
+          minimum: 1
+        itemGroupId:
+          type: string
+          enum:
+            - 01001CP06
+            - 01001CP07
+            - 01001CP08
+            - 01001CP11
+            - 01001CP12
+            - 01001CP13
+            - 01001CP21
+            - 01001CP27
         logisticDimensions:
           type: array
           items:
@@ -939,9 +1244,11 @@ components:
         foodAttributesProductConfig:
           type: array
           items:
-            $ref: '#/components/schemas/FoodAttributesProductConfig'
+            $ref: '#/components/schemas/FoodAttributeProductConfig'
         expiringDays:
           type: number
+          minimum: 1
+          maximum: 2000
         salesFormatId:
           type: string
           enum:
@@ -969,6 +1276,8 @@ components:
             - CM3
         contentQuantity:
           type: number
+          minimum: 1
+          maximum: 999999999
         supplyTypeId:
           type: string
           enum:
@@ -991,6 +1300,44 @@ components:
             - ES
             - RF
             - TA
+        distributionChannels:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionChannelsIds'
+        specificTaxId:
+          type: string
+          enum:
+            - AGUAS
+            - BEBIDAS
+            - CARNES
+            - CERVEZAS
+            - CIGARRILLOS
+            - HARINAS
+            - LICORES
+            - VINOS
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductPhoto'
+        nameInInternalChannel:
+          type: string
+          minLength: 3
+          maxLength: 40
+        nameInExternalChannel:
+          type: string
+          minLength: 3
+          maxLength: 40
+        description:
+          type: string
+          maxLength: 150
+        ecommerceChannels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductEcommerceChannel'
+        ecommerceDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductEcommerceDocument'
     FoodAttribute:
       title: FoodAttribute
       x-stoplight:
@@ -1011,3 +1358,119 @@ components:
         status:
           type: integer
       description: ''
+    DistributionChannelsIds:
+      title: Distribution channels id's
+      type: object
+      properties:
+        idDistributionChannel:
+          type: string
+          enum:
+            - DC01
+            - DC02
+    ProductPhoto:
+      title: Product's photos
+      type: object
+      properties:
+        id:
+          type: number
+          description: ID of the photo in the table
+          example: 1
+        productId:
+          type: number
+          description: ID of the product in the database
+          example: 147
+        code:
+          type: string
+          description: Internal UUID of the file in database and S3 storage
+          example: db452a80-56a7-474e-a098-48e49ec5f5f3
+        isPrincipal:
+          type: boolean
+        status:
+          type: integer
+          example: 1
+        name:
+          type: string
+          description: Real name of the file
+          example: sample.jpg
+        type:
+          type: string
+          description: Type/extension of the file
+          example: .jpg
+        size:
+          type: number
+          description: Size in kilobytes of the file
+          example: 134
+        url:
+          type: string
+          description: Type/extension of the file
+          example: 'https://arpm-mrch-pim-backend-uploads-dev.s3.amazonaws.com/supplier/rol/sample.jpg?AWSAccessKeyId=ABCASDASDASDAS'
+      required:
+        - id
+        - code
+        - isPrincipal
+    ProductEcommerceChannel:
+      title: Product's e-commerce channels
+      type: object
+      properties:
+        id:
+          type: number
+          description: ID of the product e-commerce channel in the table
+          example: 1
+        productId:
+          type: number
+          description: ID of the product in the database
+          example: 147
+        ecommerceChannelId:
+          type: string
+          enum:
+            - AGREGADORES
+            - AUTOSERVICIO
+            - SCAN&GO
+        status:
+          type: integer
+          example: 1
+      required:
+        - ecommerceChannelId
+    ProductEcommerceDocument:
+      title: Product's e-commerce documents
+      type: object
+      properties:
+        id:
+          type: number
+          description: ID of the product e-commerce document in the table
+          example: 1
+        productId:
+          type: number
+          description: ID of the product in the database
+          example: 147
+        documentTypeId:
+          type: string
+          enum:
+            - ESPECIFICACIONES
+            - NUTRICIONAL
+            - PREGUNTAS
+            - SIMILARES
+            - VIDEO
+        code:
+          type: string
+          description: Internal UUID of the file in database and S3 storage
+          example: db452a80-56a7-474e-a098-48e49ec5f5f3
+        status:
+          type: integer
+          example: 1
+        name:
+          type: string
+        type:
+          type: string
+        size:
+          type: number
+        url:
+          type: string
+      required:
+        - id
+        - documentTypeId
+        - code
+        - name
+        - type
+        - size
+        - url

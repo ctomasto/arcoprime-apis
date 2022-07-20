@@ -51,12 +51,12 @@ x-tagGroups:
       - groups
   - name: Validations
     tags:
-    - validations
+      - validations
 paths:
   /helpers/country:
     get:
       tags:
-      - geography
+        - geography
       summary: Get countries
       operationId: get-helpers-country
       responses:
@@ -110,21 +110,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorTimeout'
-  /helpers/country/{id}:
+  '/helpers/country/{id}':
     get:
       tags:
-      - geography
+        - geography
       summary: Get one country
       description: Returns a single country
       operationId: get-helpers-one-country
       parameters:
-      - name: id
-        in: path
-        description: ID of country to return
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          description: ID of country to return
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -183,7 +183,7 @@ paths:
   /helpers/region:
     get:
       tags:
-      - geography
+        - geography
       summary: Get regions
       description: Returns all the regions of one country
       operationId: get-helpers-region
@@ -244,21 +244,21 @@ paths:
             example: CHL
           in: query
           name: countryCode
-  /helpers/region/{id}:
+  '/helpers/region/{id}':
     get:
       tags:
-      - geography
+        - geography
       summary: Get one region
       description: Returns a single region
       operationId: get-helpers-one-region
       parameters:
-      - name: id
-        in: path
-        description: ID of region to return
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          description: ID of region to return
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -317,7 +317,7 @@ paths:
   /helpers/commune:
     get:
       tags:
-      - geography
+        - geography
       summary: Get communes
       description: Returns all the communes of one region
       operationId: get-helpers-commune
@@ -378,21 +378,21 @@ paths:
             example: 2824
           in: query
           name: regionCode
-  /helpers/commune/{id}:
+  '/helpers/commune/{id}':
     get:
       tags:
-      - geography
+        - geography
       summary: Get one commune
       description: Returns a single commune
       operationId: get-helpers-one-commune
       parameters:
-      - name: id
-        in: path
-        description: ID of commune to return
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          description: ID of commune to return
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -451,7 +451,7 @@ paths:
   /helpers/city:
     get:
       tags:
-      - geography
+        - geography
       summary: Get cities
       description: Returns all the cities of one commune
       operationId: get-helpers-city
@@ -512,21 +512,21 @@ paths:
             example: 295
           in: query
           name: communeCode
-  /helpers/city/{id}:
+  '/helpers/city/{id}':
     get:
       tags:
-      - geography
+        - geography
       summary: Get one city
       description: Returns a single city
       operationId: get-helpers-one-city
       parameters:
-      - name: id
-        in: path
-        description: ID of city to return
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          description: ID of city to return
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -741,13 +741,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  code:
-                    type: string
-                    example: cacf2e09-9647-4f84-9d5e-5ddcb37d4cc0
-                    description: UUID del archivo
-                    format: uuid
+                  file:
+                    $ref: '#/components/schemas/File'
                 required:
-                  - code
+                  - file
         '400':
           description: Bad request
           content:
@@ -790,6 +787,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorTimeout'
+      parameters:
+        - schema:
+            type: boolean
+          in: query
+          name: includeMetadata
+          description: 'true'
   '/helpers/files/{uuids}':
     get:
       tags:
@@ -800,7 +803,7 @@ paths:
       parameters:
         - name: uuids
           in: path
-          description: List of UUID's of files to return, concatenated with &
+          description: 'List of UUID''s of files to return, concatenated with &'
           required: true
           schema:
             type: string
@@ -861,20 +864,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorTimeout'
-  /helpers/rut/{rut}:
+  '/helpers/rut/{rut}':
     get:
       tags:
-      - validations
+        - validations
       summary: Valid a chilean RUT
       description: Returns if a RUT is valid or not
       operationId: get-helpers-validate-rut
       parameters:
-      - name: rut
-        in: path
-        description: RUT to validate
-        required: true
-        schema:
-          type: string
+        - name: rut
+          in: path
+          description: RUT to validate
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful operation
@@ -927,7 +930,7 @@ paths:
   /system/users:
     get:
       tags:
-      - users
+        - users
       summary: Get system users
       operationId: get-system-users
       responses:
@@ -981,21 +984,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorTimeout'
-  /system/users/{id}:
+  '/system/users/{id}':
     get:
       tags:
-      - users
+        - users
       summary: Get one user
       description: Returns a single user
       operationId: get-system-one-user
       parameters:
-      - name: id
-        in: path
-        description: ID of user to return
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -1054,7 +1057,7 @@ paths:
   /system/groups:
     get:
       tags:
-      - groups
+        - groups
       summary: Get system groups
       operationId: get-system-groups
       responses:
@@ -1108,21 +1111,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorTimeout'
-  /system/groups/{id}:
+  '/system/groups/{id}':
     get:
       tags:
-      - groups
+        - groups
       summary: Get one group
       description: Returns a single group
       operationId: get-system-one-group
       parameters:
-      - name: id
-        in: path
-        description: ID of group to return
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          description: ID of group to return
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -1178,20 +1181,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorTimeout'
-  /system/token/{token}:
+  '/system/token/{token}':
     get:
       tags:
-      - validations
+        - validations
       summary: Valid a token
       description: Returns if a token is valid or not
       operationId: get-system-validate-token
       parameters:
-      - name: token
-        in: path
-        description: Token to validate
-        required: true
-        schema:
-          type: string
+        - name: token
+          in: path
+          description: Token to validate
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful operation
@@ -1241,6 +1244,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorTimeout'
+  '/helpers/files/confirm/{uuids}':
+    post:
+      summary: ''
+      operationId: post-helpers-files-confirm
+      responses:
+        '200':
+          description: OK
+    parameters:
+      - schema:
+          type: string
+          example: 1bd582a2-5312-421b-b38c-fd2aa15519d9&17dbfa78-8190-4875-8f21-70f89ef1933a&17dbfa78-8190-4875-8f21-70f89ef1933a&17dbfa78-8190-4875-8f21-70f89ef1933a&17dbfa78-8190-4875-8f21-70f89ef1933a&17dbfa78-8190-4875-8f21-70f89ef1933a
+        name: uuids
+        in: path
+        required: true
+        description: List of uuid concatenated by an "&"
 components:
   schemas:
     Error:
@@ -1301,7 +1319,7 @@ components:
         phonePrefix:
           type: string
           description: International phone code of the country
-          example: "+56"
+          example: '+56'
     CountryDetail:
       title: Country
       type: object
@@ -1325,7 +1343,7 @@ components:
         phonePrefix:
           type: string
           description: International phone code of the country
-          example: "+56"
+          example: '+56'
     ErrorCountriesNotFound:
       title: Country not found
       type: object
@@ -1333,7 +1351,7 @@ components:
         error:
           type: string
           description: Countries not found
-          example: "[]"
+          example: '[]'
     ErrorCountryInvalidId:
       title: Invalid id
       type: object
@@ -1341,7 +1359,7 @@ components:
         error:
           type: string
           description: Invalid id of country
-          example: "Invalid id of country"
+          example: Invalid id of country
     ErrorCountryNotFound:
       title: Country not found
       type: object
@@ -1349,7 +1367,7 @@ components:
         error:
           type: string
           description: Country not found
-          example: "Country not found"
+          example: Country not found
     Region:
       title: Region
       type: object
@@ -1361,7 +1379,7 @@ components:
         name:
           type: string
           description: Name of the region in database
-          example: "Región Metropolitana de Santiago"
+          example: Región Metropolitana de Santiago
         countryId:
           type: number
           description: Id of the parent country in database
@@ -1401,7 +1419,7 @@ components:
         name:
           type: string
           description: Name of the commune in database
-          example: "Santiago"
+          example: Santiago
         regionId:
           type: number
           description: Id of the parent region in database
@@ -1445,7 +1463,7 @@ components:
         name:
           type: string
           description: Name of the city in database
-          example: "Santiago"
+          example: Santiago
         communeId:
           type: number
           description: Id of the parent commune in database
@@ -1505,7 +1523,7 @@ components:
         url:
           type: string
           description: Type/extension of the file
-          example: https://arpm-mrch-pim-backend-uploads-dev.s3.amazonaws.com/supplier/rol/sample.jpg?AWSAccessKeyId=ABCASDASDASDAS
+          example: 'https://arpm-mrch-pim-backend-uploads-dev.s3.amazonaws.com/supplier/rol/sample.jpg?AWSAccessKeyId=ABCASDASDASDAS'
     FileUpload:
       title: File upload
       type: object
@@ -1529,6 +1547,15 @@ components:
         - domain
         - content
         - file
+      x-examples:
+        example-1:
+          domain: SUPPLIER
+          content: ROL
+          file: string
+        example-2:
+          domain: PRODUCT
+          content: PHOTO
+          file: string
     FileDeleted:
       title: File deleted
       type: object
@@ -1604,11 +1631,11 @@ components:
         createdAt:
           type: string
           description: Date of creation of the user
-          example: "2022-05-04T00:00:00.000Z"
+          example: '2022-05-04T00:00:00.000Z'
         updatedAt:
           type: string
           description: Date of last update of the user
-          example: "2022-05-04T00:00:00.000Z"
+          example: '2022-05-04T00:00:00.000Z'
     ErrorUsersNotFound:
       title: Users not found
       type: object
@@ -1680,11 +1707,11 @@ components:
         createdAt:
           type: string
           description: Date of creation of the group
-          example: "2022-05-04T00:00:00.000Z"
+          example: '2022-05-04T00:00:00.000Z'
         updatedAt:
           type: string
           description: Date of last update of the group
-          example: "2022-05-04T00:00:00.000Z"
+          example: '2022-05-04T00:00:00.000Z'
     ErrorGroupsNotFound:
       title: Groups not found
       type: object
