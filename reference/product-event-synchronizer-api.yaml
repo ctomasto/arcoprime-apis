@@ -1,0 +1,103 @@
+openapi: 3.1.0
+x-stoplight:
+  id: 5f0oakn1xvq80
+info:
+  title: product-event-synchronizer-api
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /productevent:
+    post:
+      summary: ''
+      operationId: post-productevent
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  $ref: '#/components/schemas/ProductEvent'
+      parameters:
+        - schema:
+            type: string
+          in: header
+components:
+  schemas:
+    ProductEvent:
+      title: ProductEvent
+      x-stoplight:
+        id: 95lurf2qwdm50
+      type: object
+      description: Endpoint to receive the response from SAP for a single product creation event
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: b0713ddd-afc9-4f74-bf3d-b9352e576e21
+          description: UUID assigned to a single product in a CSV file
+        eventType:
+          type: string
+          enum:
+            - CREATION
+            - UPDATE
+          example: CREATION
+          description: Enum to identify the type of event
+        status:
+          type: string
+          enum:
+            - SUCCESS
+            - ERROR
+          example: SUCCESS
+          description: status of the creation in SAP
+        data:
+          $ref: '#/components/schemas/ProductCreationData'
+          description: Data in case the status is SUCCESS
+        error:
+          $ref: '#/components/schemas/ErrorData'
+          description: Data in case the status is ERROR
+      required:
+        - id
+        - eventType
+        - status
+    ProductCreationData:
+      title: ProductCreationData
+      x-stoplight:
+        id: 436vfeunjhqre
+      type: object
+      properties:
+        sku:
+          type: string
+          example: '9000356'
+        vcCode:
+          type: string
+          example: '1209056'
+      required:
+        - sku
+    ErrorData:
+      title: ErrorData
+      x-stoplight:
+        id: pldwhh2kuzfon
+      type: object
+      properties:
+        code:
+          type: string
+          example: '001'
+        message:
+          type: string
+          example: El código de barras del producto no cumple con el formato EAN
+          minLength: 0
+          maxLength: 200
+  securitySchemes:
+    '12345':
+      name: API Key
+      type: apiKey
+      in: header
