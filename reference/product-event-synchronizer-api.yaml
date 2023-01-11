@@ -9,7 +9,7 @@ servers:
 paths:
   /productevent:
     post:
-      summary: ''
+      summary: Notification of product event
       operationId: post-productevent
       responses:
         '200':
@@ -26,10 +26,7 @@ paths:
               properties:
                 event:
                   $ref: '#/components/schemas/ProductEvent'
-      parameters:
-        - schema:
-            type: string
-          in: header
+      description: This endpoint is used to notify the result of the product creation in SAP
 components:
   schemas:
     ProductEvent:
@@ -68,6 +65,8 @@ components:
             $ref: '#/components/schemas/ErrorData'
         dateTime:
           type: string
+          format: date-time
+          example: '2022-07-16T19:20:30+01:00'
       required:
         - id
         - eventType
