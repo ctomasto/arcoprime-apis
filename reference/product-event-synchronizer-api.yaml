@@ -62,8 +62,12 @@ components:
           $ref: '#/components/schemas/ProductCreationData'
           description: Data in case the status is SUCCESS
         error:
-          $ref: '#/components/schemas/ErrorData'
           description: Data in case the status is ERROR
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorData'
+        dateTime:
+          type: string
       required:
         - id
         - eventType
@@ -91,11 +95,11 @@ components:
         code:
           type: string
           example: '001'
-        message:
+        error:
           type: string
           example: El código de barras del producto no cumple con el formato EAN
-          minLength: 0
           maxLength: 200
+          minLength: 1
   securitySchemes:
     '12345':
       name: API Key
